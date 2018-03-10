@@ -5,6 +5,7 @@
     </div>
     <figcaption>{ opts.name }</figcaption>
   </figure>
+
   <style>
     figure {
       margin: 0;
