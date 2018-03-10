@@ -5,6 +5,7 @@
     name={ store.user.displayName }>
   </user>
   <login></login>
+
   <script>
     import store from '../store'
     import './user.tag'

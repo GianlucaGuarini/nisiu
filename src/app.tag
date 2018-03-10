@@ -1,16 +1,23 @@
 <app>
   <loader if={ isLoading }></loader>
-  <main if={ !isLoading }>
+  <lock if={ !isLoading && store.isLocked() } ></lock>
+  <main data-is="animore" if={ !store.isLocked() && !isLoading }>
     <main-header></main-header>
+    <passwords-manager></passwords-manager>
     <main-footer></main-footer>
   </main>
+
   <script>
     import store from './store'
+
+    import './components/passwords-manager.tag'
+    import './components/lock.tag'
     import './components/loader.tag'
     import './components/main-header.tag'
     import './components/main-footer.tag'
 
     this.isLoading = true
+    this.store = store
 
     this.onReady = () => {
       this.isLoading = false
@@ -24,6 +31,8 @@
     store
       .on('login', this.update)
       .on('logout', this.update)
+      .on('lock', this.update)
+      .on('unlock', this.update)
   </script>
 
   <style>
