@@ -1,7 +1,7 @@
 <login>
   <loader if={ isAuthenticating }></loader>
-  <form if={ !isAuthenticating } onsubmit={ store.user ? logout : login }>
-    <button>{ store.user ? 'logout' : 'login' }</button>
+  <form class='pure-form' if={ !isAuthenticating } onsubmit={ store.user ? logout : login }>
+    <button class='pure-button pure-button-primary'>{ store.user ? 'logout' : 'login' }</button>
   </form>
 
   <script>

@@ -1,7 +1,7 @@
 <user>
   <figure>
-    <div class="image-wrapper">
-      <img width="100%" src={opts.image}/>
+    <div class='image-wrapper'>
+      <img width='100%' src={opts.image}/>
     </div>
     <figcaption>{ opts.name }</figcaption>
   </figure>

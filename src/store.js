@@ -5,7 +5,8 @@ import crypto from 'crypto-js'
 const MASTER_PASSWORD_DECRYPTION_RESULT = 'nisiu'
 
 export default observable({
-  masterPassword: null,
+  masterPassword: false,
+  hasMaster: false,
   init() {
     firebase.initializeApp({
       apiKey: '<@API_KEY@>',
@@ -19,7 +20,7 @@ export default observable({
     return new Promise((resolve, reject) => {
       firebase.auth().onAuthStateChanged(user => {
         if (user) {
-          resolve(user)
+          this.fetchMaster().then(() => resolve(user))
         } else {
           reject()
         }
@@ -29,6 +30,7 @@ export default observable({
   async login() {
     const provider = new firebase.auth.GoogleAuthProvider()
     await firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION)
+
     return firebase.auth().signInWithPopup(provider).then(result => {
       this.trigger('login')
       return result
@@ -49,7 +51,7 @@ export default observable({
     return firebase.database().ref().update({
       [userPassword(this.user.uid, id)]: {
         id,
-        value: crypto.AES.encrypt(MASTER_PASSWORD_DECRYPTION_RESULT, value),
+        value: this.encrypt(value, this.masterPassword),
         comment
       }
     })
@@ -64,28 +66,44 @@ export default observable({
         return snapshot.val() && snapshot.val().passwords || []
       })
   },
-
   setMasterPassword(password) {
     if (!this.user) return Promise.reject()
 
     return firebase.database().ref().update({
-      [userMasterPassword(this.user.uid)]: crypto.AES.encrypt(MASTER_PASSWORD_DECRYPTION_RESULT, password).toString()
+      [userMasterPassword(this.user.uid)]: this.encrypt(MASTER_PASSWORD_DECRYPTION_RESULT, password)
     }).then((result) => {
       this.masterPassword = password
       this.trigger('unlock')
       return result
     })
   },
-  unlock(value) {
+  encrypt(value, key) {
+    return crypto.AES.encrypt(value, key).toString()
+  },
+  decrypt(value, key) {
+    return crypto.AES.decrypt(value, key).toString(crypto.enc.Utf8)
+  },
+  fetchMaster() {
     if (!this.user) return Promise.reject()
 
     return this.database
       .ref(userMasterPassword(this.user.uid))
       .once('value')
       .then(snapshot => {
-        console.log(snapshot.val(), crypto.AES.decrypt(snapshot.val(), value).toString(crypto.enc.Utf8))
-        if (crypto.AES.decrypt(snapshot.val(), value).toString(crypto.enc.Utf8) === MASTER_PASSWORD_DECRYPTION_RESULT)  {
-          this.masterPassword = value
+        if (snapshot.val()) {
+          this.hasMaster = true
+        }
+      })
+  },
+  unlock(password) {
+    if (!this.user) return Promise.reject()
+
+    return this.database
+      .ref(userMasterPassword(this.user.uid))
+      .once('value')
+      .then(snapshot => {
+        if (this.decrypt(snapshot.val(), password) === MASTER_PASSWORD_DECRYPTION_RESULT)  {
+          this.masterPassword = password
           this.trigger('unlock')
           return true
         }
@@ -94,7 +112,7 @@ export default observable({
       })
   },
   lock() {
-    this.masterPassword = null
+    this.masterPassword = false
     this.trigger('lock')
   },
   get database() {
