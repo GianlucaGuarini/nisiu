@@ -29,18 +29,35 @@ export default observable({
   },
   async login() {
     const provider = new firebase.auth.GoogleAuthProvider()
+
     await firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION)
 
     return firebase.auth().signInWithPopup(provider).then(result => {
-      this.trigger('login')
-      return result
+      return this.fetchMaster().then(() => {
+        this.trigger('login')
+        return result
+      })
     })
   },
   logout() {
     return firebase.auth().signOut().then(result => {
       this.trigger('logout')
+      this.lock()
       return result
     })
+  },
+  deleteAccount() {
+    if (!this.user) return Promise.reject()
+
+    const isConfirmed = window.confirm('Are you sure you want to delete your account? All your old passwords will be deleted')
+
+    if (isConfirmed) return Promise.all([
+      this.database.ref(userMasterPassword(this.user.uid)).remove(),
+      this.database.ref(userPasswords(this.user.uid)).remove(),
+      this.user.delete()
+    ]).then(() => this.lock())
+
+    return Promise.reject()
   },
   isLocked() {
     return !this.masterPassword
@@ -48,7 +65,7 @@ export default observable({
   setPassword(id, value, comment) {
     if (!this.user || this.isLocked()) return Promise.reject()
 
-    return firebase.database().ref().update({
+    return this.database.ref().update({
       [userPassword(this.user.uid, id)]: {
         id,
         value: this.encrypt(value, this.masterPassword),
@@ -69,13 +86,14 @@ export default observable({
   setMasterPassword(password) {
     if (!this.user) return Promise.reject()
 
-    return firebase.database().ref().update({
-      [userMasterPassword(this.user.uid)]: this.encrypt(MASTER_PASSWORD_DECRYPTION_RESULT, password)
-    }).then((result) => {
-      this.masterPassword = password
-      this.trigger('unlock')
-      return result
-    })
+    return this.database
+      .ref().update({
+        [userMasterPassword(this.user.uid)]: this.encrypt(MASTER_PASSWORD_DECRYPTION_RESULT, password)
+      }).then((result) => {
+        this.masterPassword = password
+        this.trigger('unlock')
+        return result
+      })
   },
   encrypt(value, key) {
     return crypto.AES.encrypt(value, key).toString()
