@@ -1,6 +1,4 @@
 export default {
-  get database() { return firebase.database() },
-  get user() { return firebase.auth().currentUser },
   init() {
     firebase.initializeApp({
       apiKey: '<@API_KEY@>',
@@ -12,7 +10,7 @@ export default {
     })
 
     return new Promise((resolve, reject) => {
-      firebase.auth().onAuthStateChanged(function(user) {
+      firebase.auth().onAuthStateChanged(user => {
         if (user) {
           resolve(user)
         } else {
@@ -28,5 +26,11 @@ export default {
   },
   logout() {
     return firebase.auth().signOut()
+  },
+  get database() {
+    return firebase.database()
+  },
+  get user() {
+    return firebase.auth().currentUser
   }
 }
