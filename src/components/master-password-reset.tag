@@ -3,7 +3,7 @@
   <form class='pure-form pure-form-stacked' onsubmit={ onSubmit }>
     <label for='password-reset'>Set your master password</label>
     <input readonly={ isLoading } ref='input' id='password-reset' type='password'/>
-    <button class='pure-button pure-button-primary'>Sumbit</button>
+    <button class={ pure-button: true,  pure-button-primary: !isLoading }>Sumbit</button>
   </form>
 
   <script>
@@ -29,4 +29,9 @@
     }
   </script>
 
+  <style>
+    input, button {
+      width: 100%;
+    }
+  </style>
 </master-password-reset>

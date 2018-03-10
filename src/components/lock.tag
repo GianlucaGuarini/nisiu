@@ -1,12 +1,20 @@
 <lock>
-  <login if={ !store.user }></login>
-  <master-password-check if={ store.hasMaster && store.user }></master-password-check>
-  <master-password-reset if={ !store.hasMaster }></master-password-reset>
+  <main-login if={ !store.user }></main-login>
+  <div class='main-wrapper' if={ store.hasMaster && store.user }>
+    <div class='pure-u-1-3'>
+      <master-password-check></master-password-check>
+    </div>
+    <div class='pure-u-2-3'>
+      <delete-account></delete-account>
+    </div>
+  </div>
+  <master-password-reset if={ !store.hasMaster && store.user }></master-password-reset>
 
   <script>
     import './master-password-check.tag'
     import './master-password-reset.tag'
-    import './login.tag'
+    import './delete-account.tag'
+    import './main-login.tag'
     import store from '../store'
 
     this.store = store
@@ -28,8 +36,15 @@
       padding: 16px;
     }
 
-    label {
+    label, h1, h2, h3, p {
       color: white;
+    }
+
+    .main-wrapper {
+      display: flex;
+      justify-content: center;
+      flex-direction: column;
+      align-items: center;
     }
   </style>
 </lock>
