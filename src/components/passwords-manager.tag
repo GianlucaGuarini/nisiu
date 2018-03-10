@@ -9,8 +9,17 @@
 
     this.passwords = []
 
-    store.fetchPasswords().then((passwords) => {
-      console.log(passwords)
-    }).catch(console.error)
+    store.on('lock', () => {
+      this.passwords = []
+    })
+
+    store.on('unlock', () => {
+      store.fetchPasswords()
+        .then((passwords) => {
+          this.passwords = passwords
+          this.update()
+        })
+        .catch(console.error)
+    })
   </script>
 </passwords-manager>
