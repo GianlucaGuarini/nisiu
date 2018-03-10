@@ -1,0 +1,10 @@
+extends: "@gianlucaguarini/eslint-config"
+
+parserOptions:
+  ecmaVersion: 2017
+
+env:
+  mocha: true
+
+globals:
+  firebase: true
