@@ -1,4 +1,6 @@
-export default {
+import { observable } from 'riot'
+
+export default observable({
   init() {
     firebase.initializeApp({
       apiKey: '<@API_KEY@>',
@@ -22,10 +24,16 @@ export default {
   async login() {
     const provider = new firebase.auth.GoogleAuthProvider()
     await firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION)
-    return firebase.auth().signInWithPopup(provider)
+    return firebase.auth().signInWithPopup(provider).then(result => {
+      this.trigger('login')
+      return result
+    })
   },
   logout() {
-    return firebase.auth().signOut()
+    return firebase.auth().signOut().then(result => {
+      this.trigger('logout')
+      return result
+    })
   },
   get database() {
     return firebase.database()
@@ -33,4 +41,4 @@ export default {
   get user() {
     return firebase.auth().currentUser
   }
-}
+})

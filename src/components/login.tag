@@ -12,16 +12,12 @@
 
     this.login = (e) => {
       e.preventDefault()
-      this.update()
-
       store.login()
-        .then(() => this.update())
     }
 
     this.logout = (e) => {
       e.preventDefault()
       store.logout()
-        .then(() => this.update())
     }
   </script>
 </login>
