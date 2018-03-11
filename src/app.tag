@@ -2,17 +2,21 @@
   <div class='main-loader' if={ isLoading }>
     <loader></loader>
   </div>
+
   <lock if={ !isLoading && store.isLocked() } ></lock>
-  <main data-is='animore' if={ !store.isLocked() && !isLoading }>
+
+  <main if={ !store.isLocked() && !isLoading }>
     <main-header></main-header>
     <passwords-manager></passwords-manager>
     <main-footer></main-footer>
+    <modal></modal>
   </main>
 
   <script>
     import store from './store'
     import { add } from 'bianco.events'
 
+    import './components/modal.tag'
     import './components/passwords-manager.tag'
     import './components/lock.tag'
     import './components/loader.tag'
@@ -22,7 +26,7 @@
     this.isLoading = true
     this.store = store
 
-    this.onReady = () => {
+    this.onReady = (result) => {
       this.isLoading = false
       this.update()
     }

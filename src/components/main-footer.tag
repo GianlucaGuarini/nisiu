@@ -4,6 +4,8 @@
 
   <script>
     import './master-password-reset.tag'
+
+    this.on('mount', () => console.log('mounted'))
   </script>
 
   <style>

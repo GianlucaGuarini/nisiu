@@ -1,7 +1,7 @@
 <delete-account>
   <loader if={ isLoading }></loader>
   <form class='pure-form pure-form-stacked' onsubmit={ onSubmit }>
-    <p>Deleting your account will allow you to <b>reset your master password</b>. <b>All your saved passwords will be reset as well</b></p>
+    <p>Deleting your account will allow you to <b>reset your master password</b>. <b>All your saved passwords will be deleted as well</b></p>
     <p if={error}>{error}</p>
     <button class='pure-button button-error'>delete</button>
   </form>

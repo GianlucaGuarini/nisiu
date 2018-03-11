@@ -1,12 +1,13 @@
 import { observable } from 'riot'
-import { userPasswords, userPassword, userMasterPassword } from './database-paths'
-import crypto from 'crypto-js'
+import { decrypt } from './util/crypto'
+import generatePassword  from './util/password-generator'
+import database from './database'
 
-const MASTER_PASSWORD_DECRYPTION_RESULT = 'nisiu'
+const USER_KEY_LENGHT = 64
 
 export default observable({
-  masterPassword: false,
-  hasMaster: false,
+  encryptedKey: false,
+  key: false,
   init() {
     firebase.initializeApp({
       apiKey: '<@API_KEY@>',
@@ -20,7 +21,7 @@ export default observable({
     return new Promise((resolve, reject) => {
       firebase.auth().onAuthStateChanged(user => {
         if (user) {
-          this.fetchMaster().then(() => resolve(user))
+          this.getEncryptedKey.finally(() => resolve(user))
         } else {
           reject()
         }
@@ -31,110 +32,87 @@ export default observable({
     const provider = new firebase.auth.GoogleAuthProvider()
 
     await firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION)
+    await firebase.auth().signInWithPopup(provider)
 
-    return firebase.auth().signInWithPopup(provider).then(result => {
-      return this.fetchMaster().then(() => {
-        this.trigger('login')
-        return result
-      })
-    })
+    return this.getEncryptedKey.finally(() => this.trigger('login'))
   },
-  logout() {
-    return firebase.auth().signOut().then(result => {
-      this.trigger('logout')
-      this.lock()
-      return result
-    })
-  },
-  deleteAccount() {
-    if (!this.user) return Promise.reject()
+  async getEncryptedKey() {
+    const key = database.key.get(this.user)
+    this.encryptedKey = key.val()
 
+    return this.encryptedKey
+  },
+  async logout() {
+    const snapshot = await firebase.auth().signOut()
+
+    this.trigger('logout')
+    this.lock()
+
+    return snapshot.val()
+  },
+  async deleteAccount() {
     const isConfirmed = window.confirm('Are you sure you want to delete your account? All your old passwords will be deleted')
 
-    if (isConfirmed) return Promise.all([
-      this.database.ref(userMasterPassword(this.user.uid)).remove(),
-      this.database.ref(userPasswords(this.user.uid)).remove(),
-      this.user.delete()
-    ]).then(() => this.lock())
+    if (isConfirmed) {
+      const snapshot = await database.account.delete(this.user)
+      this.lock()
 
-    return Promise.reject()
-  },
-  isLocked() {
-    return !this.masterPassword
-  },
-  setPassword(id, value, comment) {
-    if (!this.user || this.isLocked()) return Promise.reject()
+      return snapshot.val()
+    }
 
-    return this.database.ref().update({
-      [userPassword(this.user.uid, id)]: {
-        id,
-        value: this.encrypt(value, this.masterPassword),
-        comment
-      }
-    })
+    throw 'Error'
   },
-  fetchPasswords() {
-    if (!this.user || this.isLocked()) return Promise.reject()
+  async addPassword(id, value, comment) {
+    const snapshot = await database.password.set(this.user, this.key, { id, value, comment })
 
-    return this.database
-      .ref(userPasswords(this.user.uid))
-      .once('value')
-      .then(snapshot => {
-        return snapshot.val() && snapshot.val().passwords || []
-      })
-  },
-  setMasterPassword(password) {
-    if (!this.user) return Promise.reject()
+    this.trigger('password:added')
 
-    return this.database
-      .ref().update({
-        [userMasterPassword(this.user.uid)]: this.encrypt(MASTER_PASSWORD_DECRYPTION_RESULT, password)
-      }).then((result) => {
-        this.masterPassword = password
-        this.trigger('unlock')
-        return result
-      })
+    return snapshot.val()
   },
-  encrypt(value, key) {
-    return crypto.AES.encrypt(value, key).toString()
-  },
-  decrypt(value, key) {
-    return crypto.AES.decrypt(value, key).toString(crypto.enc.Utf8)
-  },
-  fetchMaster() {
-    if (!this.user) return Promise.reject()
+  async deletePassword(id) {
+    const snapshot = await database.password.delete(this.user, id)
 
-    return this.database
-      .ref(userMasterPassword(this.user.uid))
-      .once('value')
-      .then(snapshot => {
-        if (snapshot.val()) {
-          this.hasMaster = true
-        }
-      })
+    this.trigger('password:removed')
+
+    return snapshot.val()
   },
-  unlock(password) {
-    if (!this.user) return Promise.reject()
+  async fetchPasswords() {
+    const snapshot = await database.account.getPasswords(this.user)
 
-    return this.database
-      .ref(userMasterPassword(this.user.uid))
-      .once('value')
-      .then(snapshot => {
-        if (this.decrypt(snapshot.val(), password) === MASTER_PASSWORD_DECRYPTION_RESULT)  {
-          this.masterPassword = password
-          this.trigger('unlock')
-          return true
-        }
+    return snapshot.val() && Object.values(snapshot.val()) || []
+  },
 
-        return Promise.reject(false)
-      })
+  async setEncryptedKey(password) {
+    const key = generatePassword(USER_KEY_LENGHT)
+    const snapshot = await database.key.set(this.user, key, password)
+
+    this.key = key
+    this.encryptedKey = snapshot.val()
+
+    return { key: key, encryptedKey: this.encryptedKey }
+  },
+  async unlock(password) {
+    const encryptedKey = await database.key.get(this.user).val()
+    const key = decrypt(encryptedKey, password)
+
+    if (key) {
+      this.key = key
+      this.trigger('unlock')
+
+      return true
+    }
+
+    return false
+  },
+  revealPassword(value) {
+    return decrypt(value, this.key)
   },
   lock() {
-    this.masterPassword = false
+    this.key = false
     this.trigger('lock')
   },
-  get database() {
-    return firebase.database()
+  isLocked() {
+    return !this.key
   },
   get user() {
     return firebase.auth().currentUser
