@@ -99,6 +99,8 @@ export default observable({
     this.key = key
     this.encryptedKey = (await database.key.get(this.user)).val()
 
+    this.trigger('unlock')
+
     return { key: key, encryptedKey: this.encryptedKey }
   },
   async unlock(password) {
