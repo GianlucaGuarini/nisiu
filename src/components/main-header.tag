@@ -16,9 +16,12 @@
   <style>
     :scope {
       display: flex;
-      margin-bottom: 16px;
+      color: white;
+      margin-bottom: var(--default-size);
       align-items: center;
       justify-content: space-between;
+      background: var(--secondary-color);
+      padding: var(--default-size);
     }
   </style>
 </main-header>

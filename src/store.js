@@ -46,12 +46,10 @@ export default observable({
     return this.encryptedKey
   },
   async logout() {
-    const snapshot = await firebase.auth().signOut()
+    await firebase.auth().signOut()
 
     this.trigger('logout')
     this.lock()
-
-    return snapshot.val()
   },
   async deleteAccount() {
     const isConfirmed = window.confirm('Are you sure you want to delete your account? All your old passwords will be deleted')
@@ -67,6 +65,18 @@ export default observable({
     const snapshot = await database.password.set(this.user, this.key, { id, value, comment })
 
     this.trigger('password:added')
+
+    return snapshot.val()
+  },
+
+  async editPassword(id, value, comment, mustDecrypt) {
+    const snapshot = await database.password.set(this.user, this.key, {
+      id,
+      value: mustDecrypt ? decrypt(value, this.key) : value,
+      comment
+    })
+
+    this.trigger('password:edited')
 
     return snapshot.val()
   },
@@ -112,7 +122,6 @@ export default observable({
     this.trigger('modal:close')
   },
   revealPassword(value) {
-    console.log(this.key)
     return decrypt(value, this.key)
   },
   lock() {

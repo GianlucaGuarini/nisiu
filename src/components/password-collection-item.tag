@@ -2,40 +2,35 @@
   <p>{ opts.password.id }</p>
 
   <div class='pure-button-group'>
-    <button class='pure-button' onclick={ reveal }>
+    <button class='pure-button button-primary' onclick={ reveal }>
       reveal
     </button>
-    <button class='pure-button' onclick={ edit }>
+    <button class='pure-button button-secondary' onclick={ edit }>
       edit
     </button>
-    <button class='pure-button' onclick={ delete }>
+    <button class='pure-button button-error' onclick={ delete }>
       delete
     </button>
   </div>
 
   <script>
     import './password-revealer.tag'
-    import './add-password.tag'
+    import './edit-password.tag'
     import store from '../store'
-
-    const password = opts.password
 
     this.reveal = () => {
       store.openModal('password-revealer', {
-        value: store.revealPassword(password.value),
-        comment: password.comment
+        value: store.revealPassword(opts.password.value),
+        comment: opts.password.comment
       })
     }
 
     this.delete = () => {
-      store.deletePassword(password.id)
+      store.deletePassword(opts.password.id)
     }
 
     this.edit = () => {
-      store.openModal('add-password', {
-        readonly: true,
-        ...password
-      })
+      store.openModal('edit-password', opts.password)
     }
   </script>
 
@@ -44,6 +39,11 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+      padding-left: var(--default-size);
+      padding-right: var(--default-size);
+
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+      background: rgba(0, 0, 0, 0.05)
     }
   </style>
 </password-collection-item>

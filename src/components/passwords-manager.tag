@@ -2,7 +2,7 @@
   <passwords-collection passwords={passwords}>
   </passwords-collection>
 
-  <button class='pure-button pure-button-primary' onclick={ addPassword }>
+  <button class='pure-button button-primary' onclick={ addPassword }>
     Add Password
   </button>
 
@@ -33,19 +33,23 @@
 
   store.on('unlock', this.fetch)
   store.on('password:added', this.fetch)
+  store.on('password:edited', this.fetch)
   store.on('password:deleted', this.fetch)
 
   this.on('unmount', () => {
     store.off('unlock', this.fetch)
     store.off('password:added', this.fetch)
+    store.off('password:edited', this.fetch)
     store.off('password:deleted', this.fetch)
   })
   </script>
 
   <style>
-  table {
+  :scope {
+    display: block;
     width: 100%;
-    margin-bottom: 16px;
+    padding: var(--default-size);
+    margin-bottom: var(--default-size);
   }
   </style>
 </passwords-manager>

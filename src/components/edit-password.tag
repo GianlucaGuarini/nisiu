@@ -1,20 +1,22 @@
-<add-password>
+<edit-password>
   <loader if={ isLoading }></loader>
   <form ref='form' class='pure-form pure-form-stacked' onsubmit={ onSubmit }>
-    <label for='password-id'>Insert your id</label>
+    <label for='password-id'>Your password id is:</label>
     <input required='required'
-      readonly={ isLoading }
+      value={ opts.id }
+      readonly='readonly'
       id='password-id'
       name='id'
       type='text'/>
-    <label for='password-value'>Insert your value</label>
+    <label for='password-value'>Your password value is:</label>
     <input required='required'
+      value={ opts.value }
       readonly={ isLoading }
       id='password-value'
       name='value'
       type='password'/>
-    <label>Add some comments to your password</label>
-    <textarea name='comment'></textarea>
+    <label>Comments:</label>
+    <textarea name='comment' value={ opts.comment }></textarea>
     <button class={ pure-button: true,  button-primary: !isLoading }>Sumbit</button>
   </form>
 
@@ -34,19 +36,19 @@
       e.preventDefault()
 
       const data = new FormData(this.refs.form)
-      const args = ['id', 'value', 'comment'].map(q => data.get(q))
+      const [id, value, comment] = ['id', 'value', 'comment'].map(q => data.get(q))
 
       if (this.isLoading) return
 
       this.isLoading = true
 
-      store.addPassword(...args).catch(this.reset)
+      store.editPassword(id, value, comment, value === opts.value).catch(this.reset)
     }
 
-    store.on('password:added', this.reset)
+    store.on('password:edited', this.reset)
 
     this.on('unmount', () => {
-      store.off('password:added', this.reset)
+      store.off('password:edited', this.reset)
     })
   </script>
 
@@ -55,4 +57,4 @@
       width: 100%;
     }
   </style>
-</add-password>
+</edit-password>

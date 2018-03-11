@@ -3,14 +3,14 @@
     <li
       data-is='animore'
       mount={{
-        duration: 300,
+        duration: 500,
         opacity: [0, 1],
-        translateX: [-100, 0]
+        translateX: [-120, 0]
       }}
       unmount={{
-        duration: 300,
+        duration: 500,
         opacity: [1, 0],
-        translateX: [0, -100]
+        translateX: [0, -120]
       }}
       key={ password.id }
       each={ password in opts.passwords }>
@@ -27,6 +27,9 @@
     :scope {
       display: block;
       margin-bottom: 16px;
+      overflow: hidden;
+
+      border-top: 1px solid rgba(0, 0, 0, 0.1);
     }
 
     ul {

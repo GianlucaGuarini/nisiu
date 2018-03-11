@@ -3,7 +3,7 @@
   <form class='pure-form pure-form-stacked' onsubmit={ onSubmit }>
     <label for='password-check'>Insert your master password</label>
     <input readonly={ isLoading } id='password-check' ref='input' type='password'/>
-    <button class={ pure-button: true,  pure-button-primary: !isLoading }>Sumbit</button>
+    <button class={ pure-button: true,  button-primary: !isLoading }>Sumbit</button>
   </form>
 
   <script>
