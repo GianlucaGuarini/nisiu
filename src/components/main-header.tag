@@ -16,6 +16,7 @@
   <style>
     :scope {
       display: flex;
+      margin-bottom: 16px;
       align-items: center;
       justify-content: space-between;
     }

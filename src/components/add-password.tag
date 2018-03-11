@@ -2,11 +2,21 @@
   <loader if={ isLoading }></loader>
   <form ref='form' class='pure-form pure-form-stacked' onsubmit={ onSubmit }>
     <label for='password-id'>Insert your id</label>
-    <input required='required' readonly={ isLoading } id='password-id' name='id' type='text'/>
+    <input required='required'
+      value={ opts.id }
+      readonly={ isLoading || opts.readonly }
+      id='password-id'
+      name='id'
+      type='text'/>
     <label for='password-value'>Insert your value</label>
-    <input required='required' readonly={ isLoading } id='password-value' name='value' type='password'/>
+    <input required='required'
+      value={ opts.value }
+      readonly={ isLoading }
+      id='password-value'
+      name='value'
+      type='password'/>
     <label>Add some comments to your password</label>
-    <textarea name='comment'></textarea>
+    <textarea name='comment' value={ opts.comment }></textarea>
     <button class={ pure-button: true,  pure-button-primary: !isLoading }>Sumbit</button>
   </form>
 
@@ -16,6 +26,11 @@
     import store from '../store'
 
     this.isLoading = false
+
+    this.reset = () => {
+      this.isLoading = false
+      this.update()
+    }
 
     this.onSubmit = (e) => {
       e.preventDefault()
@@ -27,24 +42,16 @@
 
       this.isLoading = true
 
-      this.reset = () => {
-        this.isLoading = false
-        this.update()
-      }
-
-      store.addPassword(...args)
-        .catch(error => {
-          this.reset()
-        })
-
-      store.on('password:added', this.reset)
-      store.on('password:removed', this.reset)
-
-      this.on('unmount', () => {
-        store.off('password:added', this.reset)
-        store.off('password:removed', this.reset)
-      })
+      store.addPassword(...args).catch(this.reset)
     }
+
+    store.on('password:added', this.reset)
+    store.on('password:removed', this.reset)
+
+    this.on('unmount', () => {
+      store.off('password:added', this.reset)
+      store.off('password:removed', this.reset)
+    })
   </script>
 
   <style>

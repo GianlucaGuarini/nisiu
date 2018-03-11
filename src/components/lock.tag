@@ -1,6 +1,6 @@
 <lock>
   <main-login if={ !store.user }></main-login>
-  <div class='main-wrapper' if={ store.hasMaster && store.user }>
+  <div class='main-wrapper' if={ store.encryptedKey && store.user }>
     <div class='pure-u-1-3'>
       <master-password-check></master-password-check>
     </div>
@@ -8,7 +8,7 @@
       <delete-account></delete-account>
     </div>
   </div>
-  <master-password-reset if={ !store.hasMaster && store.user }></master-password-reset>
+  <master-password-reset if={ !store.encryptedKey && store.user }></master-password-reset>
 
   <script>
     import './master-password-check.tag'

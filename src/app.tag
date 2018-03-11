@@ -3,9 +3,9 @@
     <loader></loader>
   </div>
 
-  <lock if={ !isLoading && store.isLocked() } ></lock>
+  <lock if={ !isLoading && store.isLocked } ></lock>
 
-  <main if={ !store.isLocked() && !isLoading }>
+  <main if={ !store.isLocked && !isLoading }>
     <main-header></main-header>
     <passwords-manager></passwords-manager>
     <main-footer></main-footer>
