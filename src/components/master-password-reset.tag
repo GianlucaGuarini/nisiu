@@ -23,9 +23,11 @@
 
       store.setEncryptedKey(this.refs.input.value)
         .finally(() => {
-          this.isLoading = false
-          this.refs.input.value = ''
-          this.update()
+          if (this.isMounted) {
+            this.isLoading = false
+            this.refs.input.value = ''
+            this.update()
+          }
         })
     }
   </script>
