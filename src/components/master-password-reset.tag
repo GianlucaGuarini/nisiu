@@ -19,8 +19,9 @@
       if (this.isLoading) return
 
       this.isLoading = true
+      this.update()
 
-      store.setMasterPassword(this.refs.input.value)
+      store.setEncryptedKey(this.refs.input.value)
         .finally(() => {
           this.isLoading = false
           this.refs.input.value = ''

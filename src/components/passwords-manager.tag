@@ -1,93 +1,51 @@
 <passwords-manager>
-  <table class="pure-table">
-    <thead>
-        <tr>
-            <th>#</th>
-            <th>Id</th>
-            <th>Comment</th>
-            <th></th>
-            <th></th>
-            <th></th>
-        </tr>
-    </thead>
+  <passwords-collection passwords={passwords}>
+  </passwords-collection>
 
-    <tbody>
-      <tr each={ password, i in passwords }>
-        <td>{ i }</td>
-        <td>{ password.id }</td>
-        <td>{ password.comment }</td>
-        <td>
-          <button class='pure-button' onclick={ reveal(password) }>
-            reveal
-          </button>
-        </td>
-        <td>
-          <button class='pure-button' onclick={ edit(password) }>
-            edit
-          </button>
-        </td>
-        <td>
-          <button class='pure-button' onclick={ delete(password) }>
-            delete
-          </button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
   <button class='pure-button pure-button-primary' onclick={ addPassword }>
-      Add Password
+    Add Password
   </button>
 
   <script>
-    import './modal.tag'
-    import './add-password.tag'
+  import './add-password.tag'
+  import './passwords-collection.tag'
 
-    import store from '../store'
+  import store from '../store'
 
-    this.passwords = []
+  this.passwords = []
 
-    this.fetch = () => {
-      store.fetchPasswords()
-        .then((passwords) => {
-          this.passwords = passwords
-          this.update()
-        })
-        .catch(console.error)
-    }
-
-    this.reveal = (password) => {
-      return () => {
-        alert(store.reveal(password.value))
-      }
-    }
-
-    this.delete = (password) => {
-      return () => {
-        store.deletePassword(password.id)
-          .then(this.fetch)
-      }
-    }
-
-    this.edit = (password) => {
-      return () => {
-
-      }
-    }
-
-    this.addPassword = () => {
-      this.refs.modal.show()
-    }
-
-    this.on('mount', () => {
-      this.fetch()
-      dialogPolyfill.registerDialog(this.refs.dialog)
+  this.fetch = () => {
+    store.fetchPasswords()
+    .then((passwords) => {
+      this.passwords = passwords
+      this.update()
     })
-    store.on('unlock', this.fetch)
-    store.on('password:added', this.fetch)
+    .catch(console.error)
+  }
 
-    this.on('unmount', () => {
-      store.off('unlock', this.fetch)
-      store.off('password:added', this.fetch)
-    })
+  this.addPassword = () => {
+    store.openModal('add-password')
+  }
+
+  this.on('mount', () => {
+    this.fetch()
+  })
+
+  store.on('unlock', this.fetch)
+  store.on('password:added', this.fetch)
+  store.on('password:deleted', this.fetch)
+
+  this.on('unmount', () => {
+    store.off('unlock', this.fetch)
+    store.off('password:added', this.fetch)
+    store.off('password:deleted', this.fetch)
+  })
   </script>
+
+  <style>
+  table {
+    width: 100%;
+    margin-bottom: 16px;
+  }
+  </style>
 </passwords-manager>

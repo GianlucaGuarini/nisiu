@@ -18,10 +18,12 @@ export default observable({
       messagingSenderId: '<@MESSAGING_SENDER_ID@>'
     })
 
+    database.init()
+
     return new Promise((resolve, reject) => {
       firebase.auth().onAuthStateChanged(user => {
         if (user) {
-          this.getEncryptedKey.finally(() => resolve(user))
+          this.fetchEncryptedKey().finally(() => resolve(user))
         } else {
           reject()
         }
@@ -34,10 +36,11 @@ export default observable({
     await firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION)
     await firebase.auth().signInWithPopup(provider)
 
-    return this.getEncryptedKey.finally(() => this.trigger('login'))
+    return this.fetchEncryptedKey().finally(() => this.trigger('login'))
   },
-  async getEncryptedKey() {
-    const key = database.key.get(this.user)
+  async fetchEncryptedKey() {
+    const key = await database.key.get(this.user)
+
     this.encryptedKey = key.val()
 
     return this.encryptedKey
@@ -54,13 +57,11 @@ export default observable({
     const isConfirmed = window.confirm('Are you sure you want to delete your account? All your old passwords will be deleted')
 
     if (isConfirmed) {
-      const snapshot = await database.account.delete(this.user)
+      await database.account.delete(this.user)
       this.lock()
-
-      return snapshot.val()
     }
 
-    throw 'Error'
+    return isConfirmed
   },
   async addPassword(id, value, comment) {
     const snapshot = await database.password.set(this.user, this.key, { id, value, comment })
@@ -70,11 +71,9 @@ export default observable({
     return snapshot.val()
   },
   async deletePassword(id) {
-    const snapshot = await database.password.delete(this.user, id)
+    await database.password.delete(this.user, id)
 
-    this.trigger('password:removed')
-
-    return snapshot.val()
+    this.trigger('password:deleted')
   },
   async fetchPasswords() {
     const snapshot = await database.account.getPasswords(this.user)
@@ -83,16 +82,18 @@ export default observable({
   },
 
   async setEncryptedKey(password) {
-    const key = generatePassword(USER_KEY_LENGHT)
-    const snapshot = await database.key.set(this.user, key, password)
+    const key = this.key || generatePassword(USER_KEY_LENGHT)
+
+    await database.key.set(this.user, key, password)
 
     this.key = key
-    this.encryptedKey = snapshot.val()
+    this.encryptedKey = (await database.key.get(this.user)).val()
 
     return { key: key, encryptedKey: this.encryptedKey }
   },
   async unlock(password) {
-    const encryptedKey = await database.key.get(this.user).val()
+    const encryptedKey = (await database.key.get(this.user)).val()
+
     const key = decrypt(encryptedKey, password)
 
     if (key) {
@@ -104,14 +105,21 @@ export default observable({
 
     return false
   },
+  openModal(component, data) {
+    this.trigger('modal:open', component, data)
+  },
+  closeModal() {
+    this.trigger('modal:close')
+  },
   revealPassword(value) {
+    console.log(this.key)
     return decrypt(value, this.key)
   },
   lock() {
     this.key = false
     this.trigger('lock')
   },
-  isLocked() {
+  get isLocked() {
     return !this.key
   },
   get user() {

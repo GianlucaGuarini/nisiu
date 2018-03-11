@@ -19,9 +19,10 @@
       if (this.isLoading) return
 
       this.isLoading = true
+      this.update()
 
       store.unlock(this.refs.input.value)
-        .catch(error => {
+        .finally(() => {
           this.isLoading = false
           this.update()
         })
