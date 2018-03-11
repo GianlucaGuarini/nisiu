@@ -49,7 +49,6 @@
 
   <style>
     main {
-      padding: 16px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;

@@ -28,7 +28,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      background: #1f282b;
+      background: var(--secondary-color);
       top: 0;
       left: 0;
       bottom: 0;

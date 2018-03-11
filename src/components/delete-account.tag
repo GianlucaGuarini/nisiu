@@ -32,20 +32,15 @@
   <style>
     :scope {
       display: flex;
-      padding: 16px;
+      padding: var(--default-size);
       background: #feced3;
-      margin: 32px 16px;
+      margin: var(--double-size) var(--default-size);
       border: 1px solid rgb(202, 60, 60);
-      border-radius: 8px;
+      border-radius: var(--half-size);
     }
 
     form > p {
       color: rgb(202, 60, 60);
-    }
-
-    button.button-error {
-      color: white;
-      background-color: rgb(202, 60, 60);
     }
   </style>
 </delete-account>

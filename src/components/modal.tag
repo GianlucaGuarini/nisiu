@@ -32,7 +32,7 @@
       position: absolute;
       top: -20px;
       right: -20px;
-      font-size: 32px;
+      font-size: var(--double-size);
       background: white;
       padding: 16px 6px;
       line-height: 0;

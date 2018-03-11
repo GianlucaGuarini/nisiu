@@ -3,10 +3,10 @@
     :scope {
       display: block;
       border: 2px solid #f3f3f3; /* Light grey */
-      border-top: 2px solid #3498db; /* Blue */
+      border-top: 2px solid var(--buttons-primary-background-color); /* Blue */
       border-radius: 50%;
-      width: 32px;
-      height: 32px;
+      width: var(--double-size);
+      height: var(--double-size);
       animation: spin 1s linear infinite;
     }
 

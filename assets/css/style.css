@@ -1,0 +1,45 @@
+html {
+  --main-color: #222;
+  --secondary-color: #111;
+  --body-background: #eeedf2;
+
+  --buttons-primary-background-color: #348d86;
+  --buttons-secondary-background-color: #333;
+
+  --default-size: 16px;
+  --double-size: 32px;
+  --half-size: 8;
+}
+
+body {
+  background: var(--body-background);
+}
+
+.button-success,
+.button-error,
+.button-warning,
+.button-primary,
+.button-secondary {
+  color: white;
+  border-radius: 4px;
+}
+
+.button-primary {
+  background: var(--buttons-primary-background-color);
+}
+
+.button-success {
+  background: rgb(28, 184, 65);
+}
+
+.button-error {
+  background: rgb(202, 60, 60);
+}
+
+.button-warning {
+  background: rgb(223, 117, 20);
+}
+
+.button-secondary {
+  background: var(--buttons-secondary-background-color);
+}
