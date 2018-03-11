@@ -6,6 +6,6 @@ export function userPassword(userId, passwordId) {
   return `${userPasswords(userId)}/${passwordId}`
 }
 
-export function userMasterPassword(userId) {
-  return `/user-master-password/${userId}`
+export function userKeys(userId) {
+  return `/users-encrypted-keys/${userId}`
 }
