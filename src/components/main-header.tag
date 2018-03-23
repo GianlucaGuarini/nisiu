@@ -1,5 +1,6 @@
 <main-header>
   <user
+    class='user'
     if={ store.user }
     image={ store.user.photoURL }
     name={ store.user.displayName }>
@@ -16,11 +17,10 @@
   <style>
     :scope {
       display: flex;
-      color: white;
       margin-bottom: var(--default-size);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
       align-items: center;
       justify-content: space-between;
-      background: var(--secondary-color);
       padding: var(--default-size);
     }
   </style>

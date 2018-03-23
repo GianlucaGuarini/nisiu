@@ -1,21 +1,10 @@
 <passwords-collection>
-  <ul>
-    <li
-      data-is='animore'
-      mount={{
-        duration: 500,
-        opacity: [0, 1],
-        translateX: [-120, 0]
-      }}
-      unmount={{
-        duration: 500,
-        opacity: [1, 0],
-        translateX: [0, -120]
-      }}
+  <ul class='mdl-list'>
+    <li data-is='password-collection-item'
+      class='mdl-list__item mdl-shadow--2dp'
       key={ password.id }
-      each={ password in opts.passwords }>
-      <password-collection-item password={password}>
-      </password-collection-item>
+      each={ password in opts.passwords }
+      password={password}>
     </li>
   </ul>
 
@@ -26,10 +15,7 @@
   <style>
     :scope {
       display: block;
-      margin-bottom: 16px;
-      overflow: hidden;
-
-      border-top: 1px solid rgba(0, 0, 0, 0.1);
+      margin-bottom: var(--default-size);
     }
 
     ul {

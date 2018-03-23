@@ -32,13 +32,15 @@ const database = {
       return database.api.ref(userPassword(user.uid, id)).remove()
     },
     set(user, key, password) {
-      const { id, value, comment } = password
+      const { id, username, name, value, comment } = password
 
       return database.api.ref().update({
         [userPassword(user.uid, id)]: {
           id,
+          name: encrypt(name, key),
+          username: encrypt(username, key),
           value: encrypt(value, key),
-          comment
+          comment: encrypt(comment, key)
         }
       })
     }

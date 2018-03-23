@@ -1,45 +1,35 @@
-html {
-  --main-color: #222;
-  --secondary-color: #111;
-  --body-background: #eeedf2;
+/* fonts */
+@import 'https://fonts.googleapis.com/icon?family=Material+Icons';
 
-  --buttons-primary-background-color: #348d86;
-  --buttons-secondary-background-color: #333;
+/* vendor css */
+@import '../vendor/css/material.css';
+@import '../vendor/css/reset.css';
+@import '../vendor/css/dialog-polyfill.css';
+
+@import './icons.css';
+@import './form.css';
+
+:root {
+  --main-color: #5D8E92;
+  --secondary-color: #FC6E64;
+  --body-background: #fffff2;
+  --dark-color: #151E3F;
+  --light-color: #FFFFFF;
+
+  --mobile-breakpoint: 462px;
+
+  --buttons-primary-background-color: #5D8E92;
+  --buttons-primary-background-color-hover: #4d7679;
+  --buttons-secondary-background-color: #FC6E64;
+
+  --text-color: var(--dark-color);
 
   --default-size: 16px;
   --double-size: 32px;
-  --half-size: 8;
+  --half-size: 8px;
 }
 
 body {
   background: var(--body-background);
-}
-
-.button-success,
-.button-error,
-.button-warning,
-.button-primary,
-.button-secondary {
-  color: white;
-  border-radius: 4px;
-}
-
-.button-primary {
-  background: var(--buttons-primary-background-color);
-}
-
-.button-success {
-  background: rgb(28, 184, 65);
-}
-
-.button-error {
-  background: rgb(202, 60, 60);
-}
-
-.button-warning {
-  background: rgb(223, 117, 20);
-}
-
-.button-secondary {
-  background: var(--buttons-secondary-background-color);
+  color: var(--text-color);
 }
