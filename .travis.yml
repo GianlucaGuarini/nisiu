@@ -1,0 +1,20 @@
+language: node_js
+
+sudo: false
+
+addons:
+  chrome: stable
+
+node_js:
+  - 9
+
+branches:
+  only:
+    - master
+
+cache:
+  directories:
+    - node_modules
+
+notifications:
+  email: false
