@@ -13,7 +13,6 @@
   <modal></modal>
 
   <script>
-    import store from './store'
     import { add } from 'bianco.events'
 
     import './components/modal.tag'
@@ -24,18 +23,18 @@
     import './components/main-footer.tag'
 
     this.isLoading = true
-    this.store = store
+    this.store = opts.store
 
     this.onReady = (result) => {
       this.isLoading = false
       this.update()
     }
 
-    store.init()
+    this.store.init()
       .then(this.onReady)
       .catch(this.onReady)
 
-    store
+    this.store
       .on('login', this.update)
       .on('logout', this.update)
       .on('lock', this.update)
@@ -43,7 +42,7 @@
 
     if (window.location.hostname !== 'localhost') {
       add(window, 'blur', () => {
-        store.lock()
+        this.store.lock()
         this.update()
       })
     }

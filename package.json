@@ -2,7 +2,7 @@
   "name": "nisiu",
   "version": "0.0.0",
   "description": "nisiu a password manager configurable with your own firebase account",
-  "main": "index.html",
+  "main": "dist/main.js",
   "scripts": {
     "test": "make test"
   },
@@ -20,6 +20,9 @@
     "@gianlucaguarini/eslint-config": "^1.0.0",
     "eslint": "^4.18.2",
     "eslint-plugin-html": "^4.0.2",
+    "jsdom": "11.6.2",
+    "jsdom-global": "3.0.2",
+    "mocha": "^5.0.5",
     "rollup": "^0.57.1",
     "rollup-plugin-commonjs": "^9.1.0",
     "rollup-plugin-node-resolve": "^3.3.0",
