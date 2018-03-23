@@ -2,8 +2,9 @@ import { observable } from 'riot'
 import { decrypt } from './util/crypto'
 import generatePassword  from './util/password-generator'
 import database from './database'
+import generateRandomId from './util/random-id'
 
-const USER_KEY_LENGHT = 64
+export const USER_KEY_LENGHT = 64
 
 export default observable({
   encryptedKey: false,
@@ -23,7 +24,7 @@ export default observable({
     return new Promise((resolve, reject) => {
       firebase.auth().onAuthStateChanged(user => {
         if (user) {
-          this.fetchEncryptedKey().finally(() => resolve(user))
+          this.fetchEncryptedKey().then(() => resolve(user))
         } else {
           reject()
         }
@@ -33,10 +34,10 @@ export default observable({
   async login() {
     const provider = new firebase.auth.GoogleAuthProvider()
 
-    await firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION)
+    // await firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION)
     await firebase.auth().signInWithPopup(provider)
 
-    return this.fetchEncryptedKey().finally(() => this.trigger('login'))
+    return this.fetchEncryptedKey().then(key => this.trigger('login') && key)
   },
   async fetchEncryptedKey() {
     const key = await database.key.get(this.user)
@@ -61,24 +62,28 @@ export default observable({
 
     return isConfirmed
   },
-  async addPassword(id, value, comment) {
-    const snapshot = await database.password.set(this.user, this.key, { id, value, comment })
-
-    this.trigger('password:added')
-
-    return snapshot.val()
-  },
-
-  async editPassword(id, value, comment, mustDecrypt) {
-    const snapshot = await database.password.set(this.user, this.key, {
-      id,
-      value: mustDecrypt ? decrypt(value, this.key) : value,
+  async addPassword({name, username, value, comment}) {
+    await database.password.set(this.user, this.key, {
+      id: generateRandomId(),
+      name,
+      username,
+      value,
       comment
     })
 
-    this.trigger('password:edited')
+    return this.trigger('password:added')
+  },
 
-    return snapshot.val()
+  async editPassword({id, name, username, value, comment}) {
+    await database.password.set(this.user, this.key, {
+      id,
+      name,
+      username,
+      value,
+      comment
+    })
+
+    return this.trigger('password:edited')
   },
   async deletePassword(id) {
     await database.password.delete(this.user, id)
@@ -106,12 +111,13 @@ export default observable({
   async unlock(password) {
     const encryptedKey = (await database.key.get(this.user)).val()
 
+    if (!encryptedKey) return false
+
     const key = decrypt(encryptedKey, password)
 
     if (key) {
       this.key = key
       this.trigger('unlock')
-
       return true
     }
 
@@ -123,7 +129,7 @@ export default observable({
   closeModal() {
     this.trigger('modal:close')
   },
-  revealPassword(value) {
+  decrypt(value) {
     return decrypt(value, this.key)
   },
   lock() {

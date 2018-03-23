@@ -9,8 +9,8 @@
     <main-header></main-header>
     <passwords-manager></passwords-manager>
     <main-footer></main-footer>
-    <modal></modal>
   </main>
+  <modal></modal>
 
   <script>
     import store from './store'
@@ -41,10 +41,12 @@
       .on('lock', this.update)
       .on('unlock', this.update)
 
-    add(window, 'blur', () => {
-      //store.lock()
-      //this.update()
-    })
+    if (window.location.hostname !== 'localhost') {
+      add(window, 'blur', () => {
+        store.lock()
+        this.update()
+      })
+    }
   </script>
 
   <style>

@@ -1,12 +1,16 @@
 <login>
-  <loader if={ isAuthenticating }></loader>
-  <form class='pure-form' if={ !isAuthenticating } onsubmit={ store.user ? logout : login }>
-    <button class='pure-button button-primary'>{ store.user ? 'logout' : 'login' }</button>
+  <form onsubmit={ store.user ? logout : login }>
+    <material-button
+      ripple={ true }
+      colored={ true }
+      raised={ true }
+      floating={ true }>{ parent.store.user ? 'logout' : 'login' }
+    </material-button>
   </form>
 
   <script>
     import store from '../store'
-    import './loader.tag'
+    import './form/material-button.tag'
 
     this.store = store
 

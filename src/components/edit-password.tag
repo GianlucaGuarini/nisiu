@@ -1,26 +1,48 @@
 <edit-password>
-  <loader if={ isLoading }></loader>
-  <form ref='form' class='pure-form pure-form-stacked' onsubmit={ onSubmit }>
-    <label for='password-id'>Your password id is:</label>
-    <input required='required'
-      value={ opts.id }
-      readonly='readonly'
-      id='password-id'
-      name='id'
-      type='text'/>
-    <label for='password-value'>Your password value is:</label>
-    <input required='required'
+  <div if={ isLoading } class='loader'>
+    <loader></loader>
+  </div>
+  <form ref='form' onsubmit={ onSubmit }>
+    <material-input
+      label='Your password name'
+      required='reqired'
+      value={opts.name}
+      id='password-name'
+      name='name'
+      type='text'
+    />
+    <material-input label='Your username value'
+      value={ opts.username }
+      readonly={ isLoading }
+      id='password-username'
+      name='username'
+      type='text'
+    />
+    <password-input label='Your password value'
+      required='required'
       value={ opts.value }
       readonly={ isLoading }
       id='password-value'
       name='value'
-      type='password'/>
-    <label>Comments:</label>
-    <textarea name='comment' value={ opts.comment }></textarea>
-    <button class={ pure-button: true,  button-primary: !isLoading }>Sumbit</button>
+      type='password'
+    />
+    <material-textarea
+      name='comment'
+      id='comment'
+      value={ opts.comment }
+      label='Add some comments to your password'/>
+    <input
+      value={ opts.id }
+      id='password-id'
+      name='id'
+      type='hidden'/>
+    <material-button type='submit' primary={ true } raised={ true } disabled={isLoading}>Save</material-button>
   </form>
 
   <script>
+    import './form/material-input.tag'
+    import './form/material-button.tag'
+    import './form/password-input.tag'
     import './loader.tag'
 
     import store from '../store'
@@ -36,13 +58,13 @@
       e.preventDefault()
 
       const data = new FormData(this.refs.form)
-      const [id, value, comment] = ['id', 'value', 'comment'].map(q => data.get(q))
+      const [id, name, username, value, comment] = ['id', 'name', 'username', 'value', 'comment'].map(q => data.get(q))
 
       if (this.isLoading) return
 
       this.isLoading = true
 
-      store.editPassword(id, value, comment, value === opts.value).catch(this.reset)
+      store.editPassword({id, name, username, value, comment}).catch(this.reset)
     }
 
     store.on('password:edited', this.reset)
@@ -54,6 +76,13 @@
 
   <style>
     input, button, textarea {
+      width: 100%;
+    }
+
+    .loader {
+      display: flex;
+      align-items: center;
+      justify-content: center;
       width: 100%;
     }
   </style>

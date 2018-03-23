@@ -8,3 +8,7 @@ env:
 
 globals:
   firebase: true
+  opts: true
+
+plugins:
+  - html
