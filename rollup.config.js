@@ -21,8 +21,9 @@ export default {
   ],
   input: 'src/main.js',
   output: [{
+    name: 'nisiu',
     sourcemap: true,
     file: 'dist/main.js',
-    format: 'iife'
+    format: 'umd'
   }]
 }

@@ -2,6 +2,7 @@
 
 ROLLUP=node_modules/.bin/rollup
 ESLINT=node_modules/.bin/eslint
+MOCHA=node_modules/.bin/mocha
 
 lint:
 	@ $(ESLINT) src
@@ -12,7 +13,7 @@ build:
 watch:
 	@ $(ROLLUP) -c rollup.config.js --watch
 
-test:
-	echo "hello"
+test: lint build
+	@ $(MOCHA) test/index.js --recursive test/*.specs.js
 
 .PHONY: lint build watch test
