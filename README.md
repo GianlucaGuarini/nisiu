@@ -30,11 +30,11 @@ Nisiu was designed only for a personal use but it can be customized in order to 
 
 # Configuration
 
-## Google Account
+## Google Account Creation
 
 Make sure to have a [google account](https://myaccount.google.com/intro). If you don't have any just create one
 
-## Firebase API
+## Firebase API Creation
 
 You will need to set your own firebase credentials in the [.env file](.env). To do so you need to create an new project using the [firebase console](https://console.firebase.google.com/)
 
@@ -42,7 +42,15 @@ You will need to set your own firebase credentials in the [.env file](.env). To 
 2. Click on the "Add Firebase to your web app" button
 3. Replace the app credentials in the [.env file](.env)
 
-## Setup your DB Rules
+## Build step
+
+Once you have done all the steps above you are ready to start using nisiu. The last step is needed to build again the app using your new credentials.
+
+1. Install the npm dependencies `npm i`
+2. Run `make build`
+3. Open `index.html` with any modern browser and voilà!
+
+# Setup your DB Rules
 
 With firebase you can easily control you application DB whitelisting the users that can read and write from it.
 
@@ -97,9 +105,8 @@ With the rules above only users belonging to the "whitelist" will be able to use
 - [x] Whitelist users
 - [ ] Add small unit test
 - [ ] Add import vs export feature via drag and drop
-- [ ] PWA enhancements
+- [x] PWA enhancements
 - [x] Add favicon
-- [ ] Publish online as github page
 
 [travis-image]:https://img.shields.io/travis/GianlucaGuarini/nisiu.svg?style=flat-square
 [travis-url]:https://travis-ci.org/GianlucaGuarini/nisiu
