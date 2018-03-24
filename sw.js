@@ -53,7 +53,7 @@ workbox.precaching.precacheAndRoute([
   },
   {
     "url": "vendor/css/material.css",
-    "revision": "f8ec986bbb8fd342369cf621d072e9b5"
+    "revision": "b423e4c4fb5b498e26e329e38565b987"
   },
   {
     "url": "vendor/css/reset.css",
