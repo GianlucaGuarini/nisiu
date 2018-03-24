@@ -1,4 +1,4 @@
-import { userPasswords, userPassword, userKeys } from './paths'
+import { userPasswords, userPassword, userKey } from './paths'
 import { encrypt } from '../util/crypto'
 
 const database = {
@@ -9,7 +9,7 @@ const database = {
     delete(user) {
       return Promise.all([
         user.delete(),
-        database.api.ref(userKeys(user.uid)).remove(),
+        database.api.ref(userKey(user.uid)).remove(),
         database.api.ref(userPasswords(user.uid)).remove()
       ])
     },
@@ -19,11 +19,11 @@ const database = {
   },
   key: {
     get(user) {
-      return database.api.ref(userKeys(user.uid)).once('value')
+      return database.api.ref(userKey(user.uid)).once('value')
     },
     set(user, key, password) {
       return database.api.ref().update({
-        [userKeys(user.uid)]: encrypt(key, password)
+        [userKey(user.uid)]: encrypt(key, password)
       })
     }
   },

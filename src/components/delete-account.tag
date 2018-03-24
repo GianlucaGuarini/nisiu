@@ -43,7 +43,7 @@
     }
 
     form > p {
-      color: rgb(202, 60, 60);
+      color: var(--error-color);
     }
 
     .loader {

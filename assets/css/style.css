@@ -22,6 +22,10 @@
   --buttons-primary-background-color-hover: #4d7679;
   --buttons-secondary-background-color: #FC6E64;
 
+  --error-color: #ce1b1d;
+  --success-color: #4fd64a;
+  --warning-color: #f06125;
+
   --text-color: var(--dark-color);
 
   --default-size: 16px;
