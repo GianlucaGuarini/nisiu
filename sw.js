@@ -17,35 +17,35 @@ workbox.precaching.precacheAndRoute([
   },
   {
     "url": "favicon/android-chrome-192x192.png",
-    "revision": "6b5b810a35960cac5ff3e23f062d728d"
+    "revision": "8e881000484eeb17cc44be2ef3c30060"
   },
   {
     "url": "favicon/android-chrome-512x512.png",
-    "revision": "1c3b8bf98ef5f9249e7e0309a99de3ad"
+    "revision": "4dee7dab8e271d5e3fc70998a0a672c6"
   },
   {
     "url": "favicon/apple-touch-icon.png",
-    "revision": "7ff3c91b858dd47a3158fd5312878be4"
+    "revision": "43d187d421adb9ec5d9a2fc0fc860e1c"
   },
   {
     "url": "favicon/favicon-16x16.png",
-    "revision": "655c61583cc50f39ad0e3d143de0ced4"
+    "revision": "4c0a5e0c967308f0fca774f8f09d3186"
   },
   {
     "url": "favicon/favicon-32x32.png",
-    "revision": "a31ddecddf5d9222f06b84460f093f6b"
+    "revision": "abb555d6205f34c25edfbf2ed9410552"
   },
   {
     "url": "favicon/mstile-150x150.png",
-    "revision": "7d8a1c0a1f3abd8a10a20713a4086935"
+    "revision": "ac8db4e96e3fb6373d7e278134047e5c"
   },
   {
     "url": "images/nisiu-icon.png",
-    "revision": "d39cb4845db978d8a2a62cc48d6996ca"
+    "revision": "4692e5a2967e3d80abed53da330ba4a1"
   },
   {
     "url": "images/nisiu.png",
-    "revision": "cb24880a5e34a9e645a48af976eab262"
+    "revision": "71b377967fd813b817c37a14943156d9"
   },
   {
     "url": "vendor/css/dialog-polyfill.css",
