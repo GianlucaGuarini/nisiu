@@ -6,7 +6,7 @@
 [![NPM downloads][npm-downloads-image]][npm-url]
 [![MIT License][license-image]][license-url]
 
-Personal firebase based password manager written in Riot.js
+nisiu is a completely free password manager configurable with your own firebase account.
 
 # General info
 
@@ -103,7 +103,8 @@ With the rules above only users belonging to the "whitelist" will be able to use
 # TODO
 
 - [x] Whitelist users
-- [ ] Add small unit test
+- [ ] Add a rock solid unit test
+- [ ] Improve async UI events with inline loaders and animations
 - [ ] Add import vs export feature via drag and drop
 - [x] PWA enhancements
 - [x] Add favicon
