@@ -1,6 +1,6 @@
 {
   "name": "nisiu",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "nisiu is a password manager configurable with your own firebase account",
   "main": "dist/main.js",
   "scripts": {
