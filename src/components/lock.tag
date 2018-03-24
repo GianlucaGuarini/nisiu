@@ -1,5 +1,5 @@
 <lock>
-  <img class='logo' width='30%' src='/assets/images/nisiu.png' />
+  <img class='logo' width='30%' src='assets/images/nisiu.png' />
   <main-login if={ !store.user }></main-login>
   <div class='main-wrapper' if={ store.user }>
     <div>
