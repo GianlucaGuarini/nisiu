@@ -17,14 +17,13 @@
     this.isOpened = false
 
     this.open = (component, data) => {
-      if (this.isOpened) return
       this.component = mount(this.refs.content, component, data)[0]
-      this.refs.dialog.showModal()
+      if (!this.isOpened) this.refs.dialog.showModal()
       this.isOpened = true
 
       add(this.refs.content, 'click', stopPropagation)
       requestAnimationFrame(() => {
-        add(window, 'click', this.close)  
+        add(window, 'click', this.close)
       })
     }
 

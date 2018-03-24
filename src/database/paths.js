@@ -1,11 +1,11 @@
 export function userPasswords(userId) {
-  return `/user-passwords/${userId}`
+  return `${userId}/passwords`
 }
 
 export function userPassword(userId, passwordId) {
   return `${userPasswords(userId)}/${passwordId}`
 }
 
-export function userKeys(userId) {
-  return `/users-encrypted-keys/${userId}`
+export function userKey(userId) {
+  return `${userId}/key`
 }

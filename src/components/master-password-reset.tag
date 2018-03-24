@@ -90,7 +90,7 @@
       const isValid = await this.validate()
 
       if (!isValid) return
-  
+
       store.setEncryptedKey(this.refs.input.val())
         .then(done)
         .catch(done)

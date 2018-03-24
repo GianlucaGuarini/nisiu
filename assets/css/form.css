@@ -1,17 +1,17 @@
 /* buttons */
 
 .mdl-button.mdl-button--success {
-  background: #4fd64a;
+  background: var(--success-color);
   color: white;
 }
 
 .mdl-button.mdl-button--error {
-  background: #ce1b1d;
+  background: var(--error-color);
   color: white;
 }
 
 .mdl-button.mdl-button--warning {
-  background: #f06125;
+  background: var(--warning-color);
   color: white;
 }
 
@@ -25,11 +25,10 @@
 }
 
 .mdl-button.mdl-button--fab.mdl-button--small-icon {
-  height: 32px;
-  width: 32px;
-  min-width: 32px;
+  height: var(--double-size);
+  width: var(--double-size);
+  min-width: var(--double-size);
 }
-
 
 /* inputs */
 

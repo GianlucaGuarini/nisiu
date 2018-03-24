@@ -14,8 +14,9 @@
 
   <script>
     import { add } from 'bianco.events'
-
+    import database from './database'
     import './components/modal.tag'
+    import './components/error-alert.tag'
     import './components/passwords-manager.tag'
     import './components/lock.tag'
     import './components/loader.tag'
@@ -30,7 +31,7 @@
       this.update()
     }
 
-    this.store.init()
+    this.store.init(database)
       .then(this.onReady)
       .catch(this.onReady)
 
