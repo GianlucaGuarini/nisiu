@@ -6,7 +6,7 @@
 [![NPM downloads][npm-downloads-image]][npm-url]
 [![MIT License][license-image]][license-url]
 
-Personal firebase based password manager written with Riot.js - WIP
+Personal firebase based password manager written in Riot.js
 
 # General info
 
