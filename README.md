@@ -17,7 +17,7 @@ Nisiu was designed only for a personal use but it can be customized in order to 
 - ✅ Built to __let you own and manage your passwords__
 - ✅ Designed __only for modern browsers__
 - ✅ It's available online with __no additional installation__
-- ✅ It tores your data on firebase and __you can set up easily your own private DB instance__ via [env credentials](.env)
+- ✅ It stores your data on firebase and __you can set up easily your own private DB instance__ via [env credentials](.env)
 - ✅ __It's secure__, it uses the [AES algorithm](https://en.wikipedia.org/wiki/Advanced_Encryption_Standard) for all the stored data by default
 - ✅ __Google as authentication__ system
 - ✅ Completely __open source__ [under MIT license](LICENSE)
