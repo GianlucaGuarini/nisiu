@@ -44,6 +44,7 @@
     if (window.location.hostname !== 'localhost') {
       add(window, 'blur', () => {
         this.store.lock()
+        this.store.closeModal()
         this.update()
       })
     }

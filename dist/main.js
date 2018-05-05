@@ -2036,7 +2036,7 @@
   }
 
   function unregister(name) {
-    __TAG_IMPL[name] = null;
+    return delete __TAG_IMPL[name]
   }
 
   const version = 'WIP';
@@ -2602,9 +2602,8 @@
       }
 
       if (tagImpl && (dom !== root || mustIncludeRoot)) {
-        if(isVirtual) { // handled in update
-          if (getAttribute(dom, IS_DIRECTIVE))
-            warn(`Virtual tags shouldn't be used together with the "${IS_DIRECTIVE}" attribute - https://github.com/riot/riot/issues/2511`);
+        const hasIsDirective = getAttribute(dom, IS_DIRECTIVE);
+        if(isVirtual && !hasIsDirective) { // handled in update
           // can not remove attribute like directives
           // so flag for removal after creation to prevent maximum stack error
           setAttribute(dom, 'virtualized', true);
@@ -2616,6 +2615,9 @@
 
           expressions.push(tag); // no return, anonymous tag, keep parsing
         } else {
+          if (hasIsDirective && isVirtual)
+            warn(`Virtual tags shouldn't be used together with the "${IS_DIRECTIVE}" attribute - https://github.com/riot/riot/issues/2511`);
+
           expressions.push(
             initChild(
               tagImpl,
@@ -10933,6 +10935,7 @@
       if (window.location.hostname !== 'localhost') {
         add(window, 'blur', () => {
           this.store.lock();
+          this.store.closeModal();
           this.update();
         });
       }
