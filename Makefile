@@ -8,8 +8,8 @@ lint:
 	@ $(ESLINT) src
 
 build:
-	@ node build-sw
 	@ $(ROLLUP) -c rollup.config.js
+	@ node build-sw
 
 watch:
 	@ $(ROLLUP) -c rollup.config.js --watch

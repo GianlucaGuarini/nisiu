@@ -52,7 +52,7 @@
     SVG_NS = 'http://www.w3.org/2000/svg',
     XLINK_REGEX = /^xlink:(\w+)/,
 
-    WIN = typeof window === T_UNDEF ? undefined : window,
+    WIN = typeof window === T_UNDEF ? /* istanbul ignore next */ undefined : window,
 
     // special native tags that cannot be treated like the others
     RE_SPECIAL_TAGS = /^(?:t(?:body|head|foot|[rhd])|caption|col(?:group)?|opt(?:ion|group))$/,
@@ -72,7 +72,7 @@
      */
     RE_BOOL_ATTRS = /^(?:disabled|checked|readonly|required|allowfullscreen|auto(?:focus|play)|compact|controls|default|formnovalidate|hidden|ismap|itemscope|loop|multiple|muted|no(?:resize|shade|validate|wrap)?|open|reversed|seamless|selected|sortable|truespeed|typemustmatch)$/,
     // version# for IE 8-11, 0 for others
-    IE_VERSION = (WIN && WIN.document || {}).documentMode | 0;
+    IE_VERSION = (WIN && WIN.document || /* istanbul ignore next */ {}).documentMode | 0;
 
   /**
    * Create a generic DOM node
@@ -101,7 +101,6 @@
   // Create cache and shortcut to the correct property
   let cssTextProp;
   let byName = {};
-  let remainder = [];
   let needsInject = false;
 
   // skip the following code on the server
@@ -135,8 +134,7 @@
      * @param { String } name - if it's passed we will map the css to a tagname
      */
     add(css, name) {
-      if (name) byName[name] = css;
-      else remainder.push(css);
+      byName[name] = css;
       needsInject = true;
     },
     /**
@@ -148,12 +146,21 @@
       needsInject = false;
       const style = Object.keys(byName)
         .map(k => byName[k])
-        .concat(remainder).join('\n');
+        .join('\n');
       /* istanbul ignore next */
       if (cssTextProp) cssTextProp.cssText = style;
       else styleNode.innerHTML = style;
+    },
+
+    /**
+     * Remove a tag style of injected DOM later.
+     * @param {String} name a registered tagname
+     */
+    remove(name) {
+      delete byName[name];
+      needsInject = true;
     }
-  }
+  };
 
   /**
    * The riot template engine
@@ -880,7 +887,7 @@
     skipAnonymousTags: true,
     // handle the auto updates on any DOM event
     autoUpdate: true
-  })
+  });
 
   /**
    * Shorter and fast way to select multiple nodes in the DOM
@@ -1167,7 +1174,7 @@
   var uid = (function uid() {
     let i = -1;
     return () => ++i
-  })()
+  })();
 
   /**
    * Helper function to set an immutable property
@@ -1386,6 +1393,17 @@
     return el
   }
 
+  const EVENT_ATTR_RE = /^on/;
+
+  /**
+   * True if the event attribute starts with 'on'
+   * @param   { String } attribute - event attribute
+   * @returns { Boolean }
+   */
+  function isEventAttribute(attribute) {
+    return EVENT_ATTR_RE.test(attribute)
+  }
+
   /**
    * Loop backward all the parents tree to detect the first custom parent tag
    * @param   { Object } tag - a Tag instance
@@ -1551,6 +1569,7 @@
    * @param { ref } the dom reference location
    */
   function makeReplaceVirtual(tag, ref) {
+    if (!ref.parentNode) return
     const frag = createFragment();
     makeVirtual.call(tag, frag);
     ref.parentNode.replaceChild(frag, ref);
@@ -1727,15 +1746,19 @@
       return
     }
 
-
-    // event handler
-    if (isFunction(value)) {
-      setEventHandler(attrName, value, dom, this);
+    switch (true) {
+    // handle events binding
+    case isFunction(value):
+      if (isEventAttribute(attrName)) {
+        setEventHandler(attrName, value, dom, this);
+      }
+      break
     // show / hide
-    } else if (isToggle) {
+    case isToggle:
       toggleVisibility(dom, attrName === HIDE_DIRECTIVE ? !value : value);
+      break
     // handle attributes
-    } else {
+    default:
       if (expr.bool) {
         dom[attrName] = value;
       }
@@ -1888,7 +1911,7 @@
       if (isFunction(css))
         fn = css;
       else
-        styleManager.add(css);
+        styleManager.add(css, name);
     }
 
     name = name.toLowerCase();
@@ -1935,7 +1958,11 @@
           setAttribute(root, IS_DIRECTIVE, tagName);
         }
 
-        tag = mount$1(root, riotTag || root.tagName.toLowerCase(), opts);
+        tag = mount$1(
+          root,
+          riotTag || root.tagName.toLowerCase(),
+          isFunction(opts) ? opts() : opts
+        );
 
         if (tag)
           tags.push(tag);
@@ -1946,7 +1973,7 @@
     // inject styles into DOM
     styleManager.inject();
 
-    if (isObject(tagName)) {
+    if (isObject(tagName) || isFunction(tagName)) {
       opts = tagName;
       tagName = 0;
     }
@@ -2036,6 +2063,7 @@
   }
 
   function unregister(name) {
+    styleManager.remove(name);
     return delete __TAG_IMPL[name]
   }
 
@@ -2154,7 +2182,6 @@
    * @param   { Object } expr - object containing the keys used to extend the children tags
    * @param   { * } key - value to assign to the new object returned
    * @param   { * } val - value containing the position of the item in the array
-   * @param   { Object } base - prototype object for the new item
    * @returns { Object } - new object containing the values of the original item
    *
    * The variables 'key' and 'val' are arbitrary.
@@ -2162,8 +2189,8 @@
    * and on the expression used on the each tag
    *
    */
-  function mkitem(expr, key, val, base) {
-    const item = base ? create(base) : {};
+  function mkitem(expr, key, val) {
+    const item = {};
     item[expr.key] = key;
     if (expr.pos) item[expr.pos] = val;
     return item
@@ -2174,9 +2201,9 @@
    * @param   { Array } items - array containing the current items to loop
    * @param   { Array } tags - array containing all the children tags
    */
-  function unmountRedundant(items, tags) {
+  function unmountRedundant(items, tags, filteredItemsCount) {
     let i = tags.length;
-    const j = items.length;
+    const j = items.length - filteredItemsCount;
 
     while (i > j) {
       i--;
@@ -2288,7 +2315,6 @@
     const isAnonymous = !__TAG_IMPL[tagName];
     const isVirtual = dom.tagName === 'VIRTUAL';
     let oldItems = [];
-    let hasKeys;
 
     // remove the each property from the original tag
     removeAttribute(dom, LOOP_DIRECTIVE);
@@ -2313,6 +2339,7 @@
       const isObject = !isArray(items) && !isString(items);
       const root = placeholder.parentNode;
       const tmpItems = [];
+      const hasKeys = isObject && !!items;
 
       // if this DOM was removed the update here is useless
       // this condition fixes also a weird async issue on IE in our unit test
@@ -2320,35 +2347,34 @@
 
       // object loop. any changes cause full redraw
       if (isObject) {
-        hasKeys = items || false;
-        items = hasKeys ?
-          Object.keys(items).map(key => mkitem(expr, items[key], key)) : [];
-      } else {
-        hasKeys = false;
+        items = items ? Object.keys(items).map(key => mkitem(expr, items[key], key)) : [];
       }
 
-      if (ifExpr) {
-        items = items.filter((item, i) => {
-          if (expr.key && !isObject)
-            return !!tmpl(ifExpr, mkitem(expr, item, i, parent))
-
-          return !!tmpl(ifExpr, extend(create(parent), item))
-        });
-      }
+      // store the amount of filtered items
+      let filteredItemsCount = 0;
 
       // loop all the new items
-      each(items, (_item, i) => {
-        const item = !hasKeys && expr.key ? mkitem(expr, _item, i) : _item;
+      each(items, (_item, index) => {
+        const i = index - filteredItemsCount;
+        const item = !hasKeys && expr.key ? mkitem(expr, _item, index) : _item;
+
+        // skip this item because it must be filtered
+        if (ifExpr && !tmpl(ifExpr, extend(create(parent), item))) {
+          filteredItemsCount ++;
+          return
+        }
+
         const itemId = getItemId(keyAttr, _item, item, hasKeyAttrExpr);
-        // reorder only if the items are objects
-        const doReorder = mustReorder && typeof _item === T_OBJECT && !hasKeys;
+        // reorder only if the items are not objects
+        // or a key attribute has been provided
+        const doReorder = !isObject && mustReorder && typeof _item === T_OBJECT || keyAttr;
         const oldPos = oldItems.indexOf(itemId);
         const isNew = oldPos === -1;
         const pos = !isNew && doReorder ? oldPos : i;
         // does a tag exist in this position?
         let tag = tags[pos];
         const mustAppend = i >= oldItems.length;
-        const mustCreate =  doReorder && isNew || !doReorder && !tag;
+        const mustCreate = doReorder && isNew || !doReorder && !tag || !tags[i];
 
         // new tag
         if (mustCreate) {
@@ -2405,7 +2431,7 @@
       });
 
       // remove the redundant tags
-      unmountRedundant(items, tags);
+      unmountRedundant(items, tags, filteredItemsCount);
 
       // clone the items array
       oldItems = tmpItems.slice();
@@ -2467,7 +2493,7 @@
       if (!isBlank(this.value) && customParent)
         arrayishRemove(customParent.refs, this.value, tagOrDom);
     }
-  }
+  };
 
   /**
    * Create a new ref directive
@@ -2506,17 +2532,14 @@
     update() {
       this.value = tmpl(this.expr, this.tag);
 
+      if (!this.stub.parentNode) return
+
       if (this.value && !this.current) { // insert
         this.current = this.pristine.cloneNode(true);
         this.stub.parentNode.insertBefore(this.current, this.stub);
         this.expressions = parseExpressions.apply(this.tag, [this.current, true]);
       } else if (!this.value && this.current) { // remove
-        unmountAll(this.expressions);
-        if (this.current._tag) {
-          this.current._tag.unmount();
-        } else if (this.current.parentNode) {
-          this.current.parentNode.removeChild(this.current);
-        }
+        this.unmount();
         this.current = null;
         this.expressions = [];
       }
@@ -2524,9 +2547,17 @@
       if (this.value) update.call(this.tag, this.expressions);
     },
     unmount() {
+      if (this.current) {
+        if (this.current._tag) {
+          this.current._tag.unmount();
+        } else if (this.current.parentNode) {
+          this.current.parentNode.removeChild(this.current);
+        }
+      }
+
       unmountAll(this.expressions || []);
     }
-  }
+  };
 
   /**
    * Create a new if directive
@@ -2841,7 +2872,7 @@
    */
   function createTag(impl = {}, conf = {}, innerHTML) {
     const tag = conf.context || {};
-    const opts = extend({}, conf.opts);
+    const opts = conf.opts || {};
     const parent = conf.parent;
     const isLoop = conf.isLoop;
     const isAnonymous = !!conf.isAnonymous;
@@ -2853,20 +2884,26 @@
     const instAttrs = [];
     // expressions on this type of Tag
     const implAttrs = [];
+    const tmpl = impl.tmpl;
     const expressions = [];
     const root = conf.root;
     const tagName = conf.tagName || getName(root);
     const isVirtual = tagName === 'virtual';
-    const isInline = !isVirtual && !impl.tmpl;
+    const isInline = !isVirtual && !tmpl;
     let dom;
+
+    if (isInline || isLoop && isAnonymous) {
+      dom = root;
+    } else {
+      if (!isVirtual) root.innerHTML = '';
+      dom = mkdom(tmpl, innerHTML, isSvg(root));
+    }
 
     // make this tag observable
     if (!skipAnonymous) observable(tag);
+
     // only call unmount if we have a valid __TAG_IMPL (has name property)
     if (impl.name && root._tag) root._tag.unmount(true);
-
-    // not yet mounted
-    define(tag, 'isMounted', false);
 
     define(tag, '__', {
       impl,
@@ -2892,29 +2929,26 @@
       head: null
     });
 
-    // create a unique id to this tag
-    // it could be handy to use it also to improve the virtual dom rendering speed
-    define(tag, '_riot_id', uid()); // base 1 allows test !t._riot_id
-    define(tag, 'root', root);
-    extend(tag, { opts }, item);
-    // protect the "tags" and "refs" property from being overridden
-    define(tag, 'parent', parent || null);
-    define(tag, 'tags', {});
-    define(tag, 'refs', {});
-
-    if (isInline || isLoop && isAnonymous) {
-      dom = root;
-    } else {
-      if (!isVirtual) root.innerHTML = '';
-      dom = mkdom(impl.tmpl, innerHTML, isSvg(root));
-    }
-
-    define(tag, 'update', (data) => componentUpdate(tag, data, expressions));
-    define(tag, 'mixin', (...mixins) => componentMixin(tag, ...mixins));
-    define(tag, 'mount', () => componentMount(tag, dom, expressions, opts));
-    define(tag, 'unmount', (mustKeepRoot) => tagUnmount(tag, mustKeepRoot, expressions));
-
-    return tag
+    // tag protected properties
+    return [
+      ['isMounted', false],
+      // create a unique id to this tag
+      // it could be handy to use it also to improve the virtual dom rendering speed
+      ['_riot_id', uid()],
+      ['root', root],
+      ['opts', opts, { writable: true, enumerable: true }],
+      ['parent', parent || null],
+      // protect the "tags" and "refs" property from being overridden
+      ['tags', {}],
+      ['refs', {}],
+      ['update', data => componentUpdate(tag, data, expressions)],
+      ['mixin', (...mixins) => componentMixin(tag, ...mixins)],
+      ['mount', () => componentMount(tag, dom, expressions, opts)],
+      ['unmount', mustKeepRoot => tagUnmount(tag, mustKeepRoot, expressions)]
+    ].reduce((acc, [key, value, opts]) => {
+      define(tag, key, value, opts);
+      return acc
+    }, extend(tag, item))
   }
 
   /**
@@ -2990,7 +3024,7 @@
     observable: observable,
     settings: settings$1,
     util,
-  })
+  });
 
   var commonjsGlobal = typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
@@ -9596,7 +9630,7 @@
     get user() {
       return firebase.auth().currentUser
     }
-  })
+  });
 
   /* global componentHandler */
 
@@ -9640,7 +9674,7 @@
 
   /**
    * Split a string into several items separed by spaces
-   * @param   { String } l - events list
+   * @param   { string } l - events list
    * @returns { Array } all the events detected
    * @private
    */
@@ -9649,24 +9683,25 @@
   /**
    * Set a listener for all the events received separated by spaces
    * @param   { HTMLElement|NodeList|Array } els     - DOM node/s where the listeners will be bound
-   * @param   { String }                     evList  - list of events we want to bind or unbind space separated
+   * @param   { string }                     evList  - list of events we want to bind or unbind space separated
    * @param   { Function }                   cb      - listeners callback
-   * @param   { String }                     method  - either 'addEventListener' or 'removeEventListener'
+   * @param   { string }                     method  - either 'addEventListener' or 'removeEventListener'
    * @param   { Object }                     options - event options (capture, once and passive)
+   * @returns { undefined }
    * @private
    */
   function manageEvents(els, evList, cb, method, options) {
     els = domToArray(els);
 
     split(evList).forEach((e) => {
-      for (let el of els) el[method](e, cb, options || false);
+      els.forEach(el => el[method](e, cb, options || false));
     });
   }
 
   /**
    * Set a listener for all the events received separated by spaces
    * @param   { HTMLElement|Array } els    - DOM node/s where the listeners will be bound
-   * @param   { String }            evList - list of events we want to bind space separated
+   * @param   { string }            evList - list of events we want to bind space separated
    * @param   { Function }          cb     - listeners callback
    * @param   { Object }            options - event options (capture, once and passive)
    * @returns { HTMLElement|NodeList|Array } DOM node/s and first argument of the function
@@ -9679,7 +9714,7 @@
   /**
    * Remove all the listeners for the events received separated by spaces
    * @param   { HTMLElement|Array } els     - DOM node/s where the events will be unbind
-   * @param   { String }            evList  - list of events we want unbind space separated
+   * @param   { string }            evList  - list of events we want unbind space separated
    * @param   { Function }          cb      - listeners callback
    * @param   { Object }             options - event options (capture, once and passive)
    * @returns { HTMLElement|NodeList|Array }  DOM node/s and first argument of the function
@@ -10294,8 +10329,6 @@
         } else {  // backwards
           document.documentElement.focus();
         }
-      } else {
-        // TODO: Focus after the dialog, is ignored.
       }
 
       return false;
@@ -10388,7 +10421,8 @@
       if (testForm.method !== 'dialog') {
         var methodDescriptor = Object.getOwnPropertyDescriptor(HTMLFormElement.prototype, 'method');
         if (methodDescriptor) {
-          // TODO: older iOS and older PhantomJS fail to return the descriptor here
+          // nb. Some older iOS and older PhantomJS fail to return the descriptor. Don't do anything
+          // and don't bother to update the element.
           var realGet = methodDescriptor.get;
           methodDescriptor.get = function() {
             if (isFormMethodDialog(this)) {
@@ -10438,13 +10472,13 @@
        * submit event and give us a chance to respond.
        */
       var nativeFormSubmit = HTMLFormElement.prototype.submit;
-      function replacementFormSubmit() {
+      var replacementFormSubmit = function () {
         if (!isFormMethodDialog(this)) {
           return nativeFormSubmit.call(this);
         }
         var dialog = findNearestDialog(this);
         dialog && dialog.close();
-      }
+      };
       HTMLFormElement.prototype.submit = replacementFormSubmit;
 
       /**
@@ -10474,10 +10508,7 @@
     dialogPolyfill['forceRegisterDialog'] = dialogPolyfill.forceRegisterDialog;
     dialogPolyfill['registerDialog'] = dialogPolyfill.registerDialog;
 
-    if (typeof undefined === 'function' && 'amd' in undefined) {
-      // AMD support
-      undefined(function() { return dialogPolyfill; });
-    } else if ('object' === 'object' && typeof module['exports'] === 'object') {
+    if (typeof module['exports'] === 'object') {
       // CommonJS support
       module['exports'] = dialogPolyfill;
     } else {
@@ -10950,7 +10981,7 @@
   var main = {
     store,
     app: mount$2('app', { store })[0]
-  }
+  };
 
   return main;
 

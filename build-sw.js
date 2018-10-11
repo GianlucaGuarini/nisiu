@@ -6,9 +6,11 @@ const buildSW = () => {
   return workboxBuild.injectManifest({
     swSrc: 'src/sw.js',
     swDest: 'sw.js',
-    globDirectory: 'assets',
+    globDirectory: '.',
     globPatterns: [
-      '**\/*.{js,css,html,png}'
+      'assets/**\/*.{js,css,html,png}',
+      '**\/*.html',
+      'dist/**\/*.js'
     ]
   })
 }
