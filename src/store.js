@@ -1,6 +1,6 @@
 import { observable } from 'riot'
 import { decrypt } from './util/crypto'
-import generatePassword  from './util/password-generator'
+import generatePassword from './util/password-generator'
 import generateRandomId from './util/random-id'
 
 export const USER_KEY_LENGHT = 64
@@ -15,18 +15,18 @@ export default observable({
       databaseURL: '<@DATABASE_URL@>',
       projectId: '<@PROJECT_ID@>',
       storageBucket: '<@STORAGE_BUCKET@>',
-      messagingSenderId: '<@MESSAGING_SENDER_ID@>'
+      messagingSenderId: '<@MESSAGING_SENDER_ID@>',
     })
 
     this.database = database
     this.database.init()
 
     return new Promise((resolve, reject) => {
-      firebase.auth().onAuthStateChanged(user => {
+      firebase.auth().onAuthStateChanged((user) => {
         if (user) {
           this.fetchEncryptedKey()
             .then(() => resolve(user))
-            .catch(e => this.showLoginFailure(e))
+            .catch((e) => this.showLoginFailure(e))
         } else {
           reject()
         }
@@ -40,8 +40,8 @@ export default observable({
     await firebase.auth().signInWithPopup(provider)
 
     return this.fetchEncryptedKey()
-      .then(key => this.trigger('login') && key)
-      .catch(e => this.showLoginFailure(e))
+      .then((key) => this.trigger('login') && key)
+      .catch((e) => this.showLoginFailure(e))
   },
   async fetchEncryptedKey() {
     const key = await this.database.key.get(this.user)
@@ -57,7 +57,9 @@ export default observable({
     this.lock()
   },
   async deleteAccount() {
-    const isConfirmed = window.confirm('Are you sure you want to delete your account? All your old passwords will be deleted')
+    const isConfirmed = window.confirm(
+      'Are you sure you want to delete your account? All your old passwords will be deleted',
+    )
 
     if (isConfirmed) {
       await this.database.account.delete(this.user)
@@ -66,14 +68,14 @@ export default observable({
 
     return isConfirmed
   },
-  async addPassword({name, username, value, comment}) {
+  async addPassword({ name, username, value, comment }) {
     try {
       await this.database.password.set(this.user, this.key, {
         id: generateRandomId(),
         name,
         username,
         value,
-        comment
+        comment,
       })
     } catch (error) {
       this.openModal('error-alert', { error })
@@ -82,14 +84,14 @@ export default observable({
     return this.trigger('password:added')
   },
 
-  async editPassword({id, name, username, value, comment}) {
+  async editPassword({ id, name, username, value, comment }) {
     try {
       await this.database.password.set(this.user, this.key, {
         id,
         name,
         username,
         value,
-        comment
+        comment,
       })
     } catch (error) {
       this.openModal('error-alert', { error })
@@ -105,7 +107,7 @@ export default observable({
   async fetchPasswords() {
     const snapshot = await this.database.account.getPasswords(this.user)
 
-    return snapshot.val() && Object.values(snapshot.val()) || []
+    return (snapshot.val() && Object.values(snapshot.val())) || []
   },
 
   async setEncryptedKey(password) {
@@ -139,7 +141,7 @@ export default observable({
     this.openModal('error-alert', {
       error,
       solution: `Make sure your "uid" is whitelisted via firebase console.
-  Or contact directly the admin to solve the issue <@ADMIN_EMAIL@>`
+  Or contact directly the admin to solve the issue <@ADMIN_EMAIL@>`,
     })
   },
   openModal(component, data) {
@@ -160,5 +162,5 @@ export default observable({
   },
   get user() {
     return firebase.auth().currentUser
-  }
+  },
 })

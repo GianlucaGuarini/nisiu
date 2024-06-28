@@ -5,25 +5,15 @@
     <div>
       <master-password-check is-first-set={!store.encryptedKey}></master-password-check>
     </div>
-    <div class='delete-account'>
-      <material-button facet='error' onclick={ openDeleteAccountOverlay }>
-        Delete Account
-      </material-button>
-    </div>
-  </div>
+ </div>
   <login class='login-logout' if={ !store.encryptedKey && store.user } class='login-logout'></login>
 
   <script>
     import './form/material-button.tag'
     import './login.tag'
     import './master-password-check.tag'
-    import './delete-account.tag'
     import './main-login.tag'
     import store from '../store'
-
-    this.openDeleteAccountOverlay = () => {
-      store.openModal('delete-account')
-    }
 
     this.store = store
   </script>
@@ -47,12 +37,6 @@
       margin-bottom: var(--default-size);
       width: 240px;
       max-width: 240px;
-    }
-
-    .delete-account {
-      position: absolute;
-      bottom: var(--default-size);
-      right: var(--default-size);
     }
 
     .login-logout {

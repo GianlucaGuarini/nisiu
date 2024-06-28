@@ -1,11 +1,12 @@
 <passwords-manager>
-  <search-input class='search' label='Search password by name...' onsearch={ onSearch }/>
+  <div class="header">
+    <material-button class='add-password' facet='dark' raised={ true } onclick={ addPassword }>
+      Add Password
+    </material-button>
+    <search-input class='search' label='Search password by name...' onsearch={ onSearch }/>
+  </div>
   <passwords-collection class='collection' passwords={getPasswords()}>
   </passwords-collection>
-  <material-button class='add-password' facet='dark' raised={ true } onclick={ addPassword }>
-    Add Password
-  </material-button>
-
   <script>
   import './form/material-button.tag'
   import './form/search-input.tag'
@@ -80,26 +81,29 @@
     margin-bottom: var(--default-size);
   }
 
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex: 100%;
+  }
+
   .collection, .search {
     flex: 1 1 100%;
   }
 
   .search {
-    max-width: var(--mobile-breakpoint);
+    max-width: 280px;
   }
 
-  .add-password {
-    margin-left: 0;
-    margin-right: auto;
-  }
 
   @media (max-width: 462px) {
     :scope {
       justify-content: center;
     }
 
-    .add-password {
-      margin: auto;
+    .header {
+      flex-direction: column;
     }
   }
   </style>

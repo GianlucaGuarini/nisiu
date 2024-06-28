@@ -10,12 +10,12 @@ const database = {
       return Promise.all([
         user.delete(),
         database.api.ref(userKey(user.uid)).remove(),
-        database.api.ref(userPasswords(user.uid)).remove()
+        database.api.ref(userPasswords(user.uid)).remove(),
       ])
     },
     getPasswords(user) {
       return database.api.ref(userPasswords(user.uid)).once('value')
-    }
+    },
   },
   key: {
     get(user) {
@@ -23,9 +23,9 @@ const database = {
     },
     set(user, key, password) {
       return database.api.ref().update({
-        [userKey(user.uid)]: encrypt(key, password)
+        [userKey(user.uid)]: encrypt(key, password),
       })
-    }
+    },
   },
   password: {
     delete(user, id) {
@@ -40,11 +40,11 @@ const database = {
           name: encrypt(name, key),
           username: encrypt(username, key),
           value: encrypt(value, key),
-          comment: encrypt(comment, key)
-        }
+          comment: encrypt(comment, key),
+        },
       })
-    }
-  }
+    },
+  },
 }
 
 export default database

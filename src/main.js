@@ -4,9 +4,7 @@ import './riot-mixins'
 import './app.tag'
 import './sw-registration'
 
-
-
 export default {
   store,
-  app: mount('app', { store })[0]
+  app: mount('app', { store })[0],
 }

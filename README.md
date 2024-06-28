@@ -14,13 +14,13 @@ Nisiu was designed only for a personal use but it can be customized in order to 
 
 ## Goals
 
-- ✅ Built to __let you own and manage your passwords__
-- ✅ Designed __only for modern browsers__
-- ✅ It's available online with __no additional installation__
-- ✅ It stores your data on firebase and __you can set up easily your own private DB instance__ via [env credentials](.env)
-- ✅ __It's secure__, it uses the [AES algorithm](https://en.wikipedia.org/wiki/Advanced_Encryption_Standard) for all the stored data by default
-- ✅ __Google as authentication__ system
-- ✅ Completely __open source__ [under MIT license](LICENSE)
+- ✅ Built to **let you own and manage your passwords**
+- ✅ Designed **only for modern browsers**
+- ✅ It's available online with **no additional installation**
+- ✅ It stores your data on firebase and **you can set up easily your own private DB instance** via [env credentials](.env)
+- ✅ **It's secure**, it uses the [AES algorithm](https://en.wikipedia.org/wiki/Advanced_Encryption_Standard) for all the stored data by default
+- ✅ **Google as authentication** system
+- ✅ Completely **open source** [under MIT license](LICENSE)
 
 ## Caveats
 
@@ -88,7 +88,7 @@ You can enhance the security of your nisiu database using complexer rules like:
       },
       "key": {
         ".validate": "newData.isString() && newData.val().length >= 64"
-      },
+      }
     },
     "whitelist": {
       ".read": false,
@@ -109,12 +109,10 @@ With the rules above only users belonging to the "whitelist" will be able to use
 - [x] PWA enhancements
 - [x] Add favicon
 
-[travis-image]:https://img.shields.io/travis/GianlucaGuarini/nisiu.svg?style=flat-square
-[travis-url]:https://travis-ci.org/GianlucaGuarini/nisiu
-
-[license-image]:http://img.shields.io/badge/license-MIT-000000.svg?style=flat-square
-[license-url]:LICENSE
-
-[npm-version-image]:http://img.shields.io/npm/v/nisiu.svg?style=flat-square
-[npm-downloads-image]:http://img.shields.io/npm/dm/nisiu.svg?style=flat-square
-[npm-url]:https://npmjs.org/package/nisiu
+[travis-image]: https://img.shields.io/travis/GianlucaGuarini/nisiu.svg?style=flat-square
+[travis-url]: https://travis-ci.org/GianlucaGuarini/nisiu
+[license-image]: http://img.shields.io/badge/license-MIT-000000.svg?style=flat-square
+[license-url]: LICENSE
+[npm-version-image]: http://img.shields.io/npm/v/nisiu.svg?style=flat-square
+[npm-downloads-image]: http://img.shields.io/npm/dm/nisiu.svg?style=flat-square
+[npm-url]: https://npmjs.org/package/nisiu

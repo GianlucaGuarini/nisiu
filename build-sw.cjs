@@ -8,10 +8,10 @@ const buildSW = () => {
     swDest: 'sw.js',
     globDirectory: '.',
     globPatterns: [
-      'assets/**\/*.{js,css,html,png}',
-      '**\/*.html',
-      'dist/**\/*.js'
-    ]
+      'assets/**/*.{js,css,html,png}',
+      '**/*.html',
+      'dist/**/*.js',
+    ],
   })
 }
 

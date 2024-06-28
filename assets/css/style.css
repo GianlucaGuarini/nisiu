@@ -10,17 +10,17 @@
 @import './form.css';
 
 :root {
-  --main-color: #5D8E92;
-  --secondary-color: #FC6E64;
+  --main-color: #5d8e92;
+  --secondary-color: #fc6e64;
   --body-background: #fffff2;
-  --dark-color: #151E3F;
-  --light-color: #FFFFFF;
+  --dark-color: #151e3f;
+  --light-color: #ffffff;
 
   --mobile-breakpoint: 462px;
 
-  --buttons-primary-background-color: #5D8E92;
+  --buttons-primary-background-color: #5d8e92;
   --buttons-primary-background-color-hover: #4d7679;
-  --buttons-secondary-background-color: #FC6E64;
+  --buttons-secondary-background-color: #fc6e64;
 
   --error-color: #ce1b1d;
   --success-color: #4fd64a;

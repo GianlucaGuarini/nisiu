@@ -13,5 +13,5 @@ mixin('material-element', {
     this.on('unmount', () => {
       componentHandler.downgradeElements([this.root])
     })
-  }
+  },
 })

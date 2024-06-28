@@ -3,29 +3,34 @@
   "version": "0.0.2",
   "description": "nisiu is a password manager configurable with your own firebase account",
   "main": "dist/main.js",
+  "type": "module",
   "scripts": {
     "test": "make test"
   },
   "author": "Gianluca Guarini <gianluca.guarini@gmail.com> (http://gianlucaguarini.com)",
   "license": "MIT",
   "dependencies": {
-    "bianco.events": "0.0.7",
-    "crypto-js": "^3.1.9-1",
-    "dialog-polyfill": "^0.4.10",
-    "riot": "^3.12.0"
+    "bianco.events": "1.1.1",
+    "crypto-js": "^4.2.0",
+    "dialog-polyfill": "^0.5.6",
+    "riot": "^3.13.2"
   },
   "devDependencies": {
-    "@gianlucaguarini/eslint-config": "^1.0.0",
-    "eslint": "^5.6.0",
-    "eslint-plugin-html": "^4.0.6",
-    "jsdom": "12.1.0",
+    "@riotjs/prettier-config": "^1.1.0",
+    "@rollup/plugin-commonjs": "^26.0.1",
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "@rollup/plugin-replace": "^5.0.7",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-config-riot": "^4.1.2",
+    "eslint-plugin-fp": "^2.3.0",
+    "eslint-plugin-html": "^8.1.1",
+    "jsdom": "24.1.0",
     "jsdom-global": "3.0.2",
     "mocha": "^5.2.0",
-    "rollup": "^0.66.3",
-    "rollup-plugin-commonjs": "^9.2.0",
-    "rollup-plugin-node-resolve": "^3.4.0",
-    "rollup-plugin-replace": "^2.1.0",
     "rollup-plugin-riot": "^2.0.0",
-    "workbox-build": "^3.6.2"
+    "prettier": "^3.3.2",
+    "rollup": "^4.18.0",
+    "workbox-build": "^7.1.1"
   }
 }

@@ -1,4 +1,4 @@
-function dec2hex (dec) {
+function dec2hex(dec) {
   return ('0' + dec.toString(16)).substr(-2)
 }
 

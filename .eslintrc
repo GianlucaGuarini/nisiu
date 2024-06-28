@@ -1,7 +1,4 @@
-extends: "@gianlucaguarini/eslint-config"
-
-parserOptions:
-  ecmaVersion: 2017
+extends: "eslint-config-riot"
 
 env:
   mocha: true
