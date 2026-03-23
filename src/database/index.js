@@ -1,40 +1,59 @@
-import { userPasswords, userPassword, userKey } from './paths'
-import { encrypt } from '../util/crypto'
+import { userPasswords, userPassword, userKey } from './paths.js'
+import { encrypt } from '../util/crypto.js'
+import { initializeApp } from 'firebase/app'
+import { getDatabase, ref } from 'firebase/database'
 
 const database = {
+  firebaseApp: null,
+  api: null,
+
   init() {
-    this.api = firebase.database()
+    const firebaseConfig = {
+      apiKey: '<@API_KEY@>',
+      authDomain: '<@AUTH_DOMAIN@>',
+      databaseURL: '<@DATABASE_URL@>',
+      projectId: '<@PROJECT_ID@>',
+      storageBucket: '<@STORAGE_BUCKET@>',
+      messagingSenderId: '<@MESSAGING_SENDER_ID@>',
+    }
+
+    this.firebaseApp = initializeApp(firebaseConfig)
+    this.api = getDatabase(this.firebaseApp)
   },
+
   account: {
     delete(user) {
       return Promise.all([
         user.delete(),
-        database.api.ref(userKey(user.uid)).remove(),
-        database.api.ref(userPasswords(user.uid)).remove(),
+        ref(userKey(user.uid)).remove(),
+        ref(userPasswords(user.uid)).remove(),
       ])
     },
     getPasswords(user) {
-      return database.api.ref(userPasswords(user.uid)).once('value')
+      return ref(userPasswords(user.uid)).once('value')
     },
   },
+
   key: {
     get(user) {
-      return database.api.ref(userKey(user.uid)).once('value')
+      return ref(userKey(user.uid)).once('value')
     },
     set(user, key, password) {
-      return database.api.ref().update({
+      return ref().update({
         [userKey(user.uid)]: encrypt(key, password),
       })
     },
   },
+
   password: {
     delete(user, id) {
-      return database.api.ref(userPassword(user.uid, id)).remove()
+      return ref(userPassword(user.uid, id)).remove()
     },
     set(user, key, password) {
       const { id, username, name, value, comment } = password
 
-      return database.api.ref().update({
+
+      return ref().update({
         [userPassword(user.uid, id)]: {
           id,
           name: encrypt(name, key),

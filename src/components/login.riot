@@ -1,0 +1,29 @@
+<login {...props}>
+  <form onsubmit={ store.user ? logout : login }>
+    <material-button
+      ripple={ true }
+      colored={ true }
+      raised={ true }
+      floating={ true }>{store.user ? 'logout' : 'login'}</material-button>
+  </form>
+
+  <script>
+    import store from '../store.js'
+    import MaterialButton from './form/material-button.riot'
+
+    export default {
+      components: {
+        MaterialButton
+      },
+      store,
+      login(e) {
+        e.preventDefault()
+        store.login()
+      },
+      logout(e) {
+        e.preventDefault()
+        store.logout()
+      }
+    }
+  </script>
+</login>

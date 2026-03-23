@@ -8,14 +8,20 @@
   <login></login>
 
   <script>
-    import store from '../store'
-    import './user.tag'
-    import './login.tag'
+    import store from '../store.js'
+    import User from './user.riot'
+    import Login from './login.riot'
 
-    this.store = store
+    export default {
+      components: {
+        User,
+        Login
+      },
+      store
+    }
   </script>
   <style>
-    :scope {
+    :host {
       display: flex;
       margin-bottom: var(--default-size);
       border-bottom: 1px solid rgba(0, 0, 0, 0.1);

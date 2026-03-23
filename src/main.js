@@ -1,8 +1,12 @@
-import { mount } from 'riot'
-import store from './store'
-import './riot-mixins'
-import './app.tag'
-import './sw-registration'
+import { mount, register } from 'riot'
+import App from './app.riot'
+import store from './store.js'
+import './riot-mixins.js'
+import './sw-registration.js'
+
+
+register('app', App)
+
 
 export default {
   store,

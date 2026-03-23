@@ -1,1 +1,1 @@
-require('jsdom-global')()
+import 'jsdom-global/register.js'

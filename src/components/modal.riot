@@ -1,0 +1,110 @@
+<modal>
+  <dialog class='mdl-dialog'>
+    <div class='mdl-dialog__content' ref={content}></div>
+    <button onclick={ close } class='close'>&times;</button>
+  <dialog>
+
+  <script>
+    import dialogPolyfill from 'dialog-polyfill'
+    import { add, remove } from 'bianco.events'
+    import { component } from 'riot'
+    import store from '../store.js'
+    import ErrorAlert from './error-alert.riot'
+    import AddPassword from './add-password.riot'
+    import EditPassword from './edit-password.riot'
+    import PasswordRevealer from './password-revealer.riot'
+    import MasterPasswordReset from './master-password-reset.riot'
+
+    function stopPropagation(e) {
+      e.stopPropagation()
+    }
+
+    const components = {
+      'error-alert': ErrorAlert,
+      'add-password': AddPassword,
+      'edit-password': EditPassword,
+      'password-revealer': PasswordRevealer,
+      'master-password-reset': MasterPasswordReset
+    }
+
+
+    export default {
+      state: {
+        isOpened: false
+      },
+      contentRef: null,
+      content(content) {
+        this.contentRef = content
+      },
+      mountedChild: null,
+      open(componentName, data) {
+        const ChildComponent = components[componentName]
+        
+        if (!ChildComponent) {
+          console.error(`Component ${componentName} not found`)
+          return
+        }
+
+        this.mountedChild = component(ChildComponent)(this.contentRef, data)
+        const dialog = this.$('dialog')
+        if (!this.state.isOpened) dialogPolyfill.registerDialog(dialog)
+        if (!this.state.isOpened) dialog.showModal()
+        this.update({ isOpened: true })
+
+        add(this.contentRef, 'click', stopPropagation)
+        requestAnimationFrame(() => {
+          add(window, 'click', () => this.close())
+        })
+      },
+      close() {
+        if (!this.state.isOpened) return
+        const dialog = this.$('dialog')
+        dialog.close()
+        if (this.mountedChild) this.mountedChild.unmount(true)
+        this.update({ isOpened: false })
+        remove(this.contentRef, 'click', stopPropagation)
+      },
+      onMounted() {
+        store.on('modal:open', (name, data) => this.open(name, data))
+        store.on('modal:close', () => this.close())
+      }
+    }
+
+  </script>
+
+  <style>
+
+    .mdl-dialog {
+      width: 452px;
+    }
+
+    .mdl-dialog__content {
+      flex-wrap: wrap;
+    }
+
+    .close {
+      font-family: 'Arial';
+      color: var(--buttons-primary-background-color);
+      border: 2px solid var(--buttons-primary-background-color);
+      font-size: var(--double-size);
+      cursor: pointer;
+      position: absolute;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      top: -20px;
+      right: -20px;
+      width: 40px;
+      height: 40px;
+      background: white;
+      border-radius: 100%;
+    }
+
+    @media (max-width: 462px) {
+      .mdl-dialog {
+        width: 80vw;
+      }
+    }
+  </style>
+</modal>

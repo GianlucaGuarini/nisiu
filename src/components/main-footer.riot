@@ -7,17 +7,23 @@
     <img width='48' alt='nisiu' src='assets/images/nisiu.png'/>
   </a>
   <script>
-    import './form/material-button.tag'
-    import './master-password-reset.tag'
-    import store from '../store'
+    import MaterialButton from './form/material-button.riot'
+    import MasterPasswordReset from './master-password-reset.riot'
+    import store from '../store.js'
 
-    this.openModal = () => {
-      store.openModal('master-password-reset')
+    export default {
+      components: {
+        MaterialButton,
+        MasterPasswordReset
+      },
+      openModal() {
+        store.openModal('master-password-reset')
+      }
     }
   </script>
 
   <style>
-    :scope {
+    :host {
       display: flex;
       flex-wrap: wrap;
       margin-top: auto;
@@ -37,7 +43,7 @@
     }
 
     @media (max-width: 462px) {
-      :scope {
+      :host {
         text-align: center;
         justify-content: center;
       }

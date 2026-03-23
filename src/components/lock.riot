@@ -5,21 +5,29 @@
     <div>
       <master-password-check is-first-set={!store.encryptedKey}></master-password-check>
     </div>
- </div>
+  </div>
   <login class='login-logout' if={ !store.encryptedKey && store.user } class='login-logout'></login>
 
   <script>
-    import './form/material-button.tag'
-    import './login.tag'
-    import './master-password-check.tag'
-    import './main-login.tag'
-    import store from '../store'
+    import MaterialButton from './form/material-button.riot'
+    import Login from './login.riot'
+    import MasterPasswordCheck from './master-password-check.riot'
+    import MainLogin from './main-login.riot'
+    import store from '../store.js'
 
-    this.store = store
+    export default {
+      components: {
+        MaterialButton,
+        Login,
+        MasterPasswordCheck,
+        MainLogin
+      },
+      store
+    }
   </script>
 
   <style>
-    :scope {
+    :host {
       text-align: center;
       position: fixed;
       flex-direction: column;

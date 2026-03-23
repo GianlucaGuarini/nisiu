@@ -1,17 +1,16 @@
-/* global componentHandler */
-import { mixin } from 'riot'
-import generateRandomId from './util/random-id'
+import { install } from 'riot'
 
-mixin('material-element', {
-  init() {
-    this.uid = generateRandomId()
+install(function(component) {
 
-    this.on('mount', () => {
-      componentHandler.upgradeElement(this.root)
-    })
+  const originalOnUnmount = component.onUnmounted
+  const originalOnMounted = component.onMounted
 
-    this.on('unmount', () => {
-      componentHandler.downgradeElements([this.root])
-    })
-  },
+  component.onMounted = function (props, state) {
+    window.componentHandler.upgradeElement(component.root)
+    if (originalOnUnmount) originalOnMounted.call(component, props, state)
+  }
+  component.onUnmounted = function(props, state) {
+    window.componentHandler.downgradeElements([component.root])
+    if (originalOnUnmount) originalOnUnmount.call(component, props, state)
+  }
 })
