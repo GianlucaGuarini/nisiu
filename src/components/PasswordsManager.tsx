@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Box, Button, TextField } from "@mui/material";
+import { Box, Button, Paper, TextField } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import { PasswordsCollection } from "./PasswordsCollection";
 import { PasswordForm } from "./PasswordForm";
@@ -41,34 +41,49 @@ export function PasswordsManager() {
 
   return (
     <Box
-      sx={{ p: 2, display: "flex", flexDirection: "column", gap: 2, flex: 1 }}
+      sx={{
+        p: 2,
+        display: "flex",
+        flexDirection: "column",
+        gap: 2,
+        flex: 1,
+      }}
     >
-      <Box
+      <Paper
+        elevation={2}
         sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          flexWrap: "wrap",
-          gap: 2,
+          zIndex: 8,
+          position: "sticky",
+          top: 0,
         }}
       >
-        <TextField
-          label="Search passwords"
-          autoFocus
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          sx={{ minWidth: 280 }}
-          size="small"
-        />
-        <Button
-          variant="contained"
-          startIcon={<AddIcon />}
-          onClick={() => setFormOpen(true)}
+        <Box
+          sx={{
+            display: "flex",
+            p: 2,
+            justifyContent: "space-between",
+            alignItems: "center",
+            flexWrap: "wrap",
+            gap: 2,
+          }}
         >
-          Add Password
-        </Button>
-      </Box>
-
+          <TextField
+            label="Search passwords"
+            autoFocus
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            sx={{ minWidth: 280 }}
+            size="small"
+          />
+          <Button
+            variant="contained"
+            startIcon={<AddIcon />}
+            onClick={() => setFormOpen(true)}
+          >
+            Add Password
+          </Button>
+        </Box>
+      </Paper>
       <PasswordsCollection
         passwords={filteredPasswords}
         onReveal={setRevealingPassword}
