@@ -28,7 +28,7 @@ export function Lock() {
         gap: 4,
       }}
     >
-      <Box component="img" src="/assets/images/nisiu.png" sx={{ width: 240, maxWidth: '60%' }} />
+      <Box component="img" src="/images/nisiu.png" sx={{ width: 240, maxWidth: '60%' }} />
       
       {!user ? (
         <>
