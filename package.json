@@ -2,39 +2,38 @@
   "name": "nisiu",
   "version": "0.0.2",
   "description": "nisiu is a password manager configurable with your own firebase account",
-  "main": "dist/main.js",
   "type": "module",
   "scripts": {
-    "build": "rollup -c rollup.config.js && node build-sw.cjs",
-    "watch": "rollup -c rollup.config.js --watch",
-    "test": "make test"
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "lint": "eslint ."
   },
   "author": "Gianluca Guarini <gianluca.guarini@gmail.com> (http://gianlucaguarini.com)",
   "license": "MIT",
   "dependencies": {
-    "@riotjs/compiler": "^10.0.1",
-    "bianco.events": "^1.1.1",
-    "clsx": "^2.1.1",
+    "@emotion/react": "^11.13.5",
+    "@emotion/styled": "^11.13.5",
+    "@mui/icons-material": "^6.4.0",
+    "@mui/material": "^6.4.0",
     "crypto-js": "^4.2.0",
-    "dialog-polyfill": "^0.5.6",
-    "firebase": "^12.11.0",
-    "riot": "^10.1.3",
-    "tiny-emitter": "^2.1.0",
-    "workbox-build": "^7.4.0"
+    "firebase": "^11.2.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
   },
   "devDependencies": {
-    "@rollup/plugin-commonjs": "^29.0.2",
-    "@rollup/plugin-node-resolve": "^16.0.3",
-    "@rollup/plugin-replace": "^6.0.3",
-    "eslint": "^9.39.4",
-    "eslint-config-prettier": "^10.1.8",
-    "eslint-config-riot": "^5.0.2",
-    "eslint-plugin-fp": "^2.3.0",
-    "jsdom": "^29.0.1",
-    "jsdom-global": "^3.0.2",
-    "mocha": "^11.7.5",
-    "prettier": "^3.8.1",
-    "rollup": "^4.60.0",
-    "rollup-plugin-riot": "^10.0.0"
+    "@eslint/js": "^9.17.0",
+    "@types/crypto-js": "^4.2.2",
+    "@types/react": "^19.0.2",
+    "@types/react-dom": "^19.0.2",
+    "@vitejs/plugin-react": "^4.3.4",
+    "eslint": "^9.17.0",
+    "eslint-plugin-react-hooks": "^5.1.0",
+    "eslint-plugin-react-refresh": "^0.4.16",
+    "globals": "^15.14.0",
+    "typescript": "~5.7.2",
+    "typescript-eslint": "^8.18.2",
+    "vite": "^6.0.7",
+    "workbox-build": "^7.3.0"
   }
 }

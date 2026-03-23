@@ -1,0 +1,39 @@
+/* fonts */
+@import 'https://fonts.googleapis.com/icon?family=Material+Icons';
+
+/* vendor css */
+@import '../vendor/css/material.css';
+@import '../vendor/css/reset.css';
+@import '../vendor/css/dialog-polyfill.css';
+
+@import './icons.css';
+@import './form.css';
+
+:root {
+  --main-color: #5d8e92;
+  --secondary-color: #fc6e64;
+  --body-background: #fffff2;
+  --dark-color: #151e3f;
+  --light-color: #ffffff;
+
+  --mobile-breakpoint: 462px;
+
+  --buttons-primary-background-color: #5d8e92;
+  --buttons-primary-background-color-hover: #4d7679;
+  --buttons-secondary-background-color: #fc6e64;
+
+  --error-color: #ce1b1d;
+  --success-color: #4fd64a;
+  --warning-color: #f06125;
+
+  --text-color: var(--dark-color);
+
+  --default-size: 16px;
+  --double-size: 32px;
+  --half-size: 8px;
+}
+
+body {
+  background: var(--body-background);
+  color: var(--text-color);
+}
