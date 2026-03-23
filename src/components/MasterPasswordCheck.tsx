@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState } from "react";
 import {
   TextField,
   Button,
@@ -9,10 +9,10 @@ import {
   Checkbox,
   Divider,
   CircularProgress,
-} from '@mui/material'
-import FingerprintIcon from '@mui/icons-material/Fingerprint'
-import { useStore } from '../store/StoreContext'
-import { isTrustedDevice } from '../webauthn'
+} from "@mui/material";
+import FingerprintIcon from "@mui/icons-material/Fingerprint";
+import { useStore } from "../store/StoreContext";
+import { isTrustedDevice } from "../webauthn";
 
 export function MasterPasswordCheck() {
   const {
@@ -21,77 +21,83 @@ export function MasterPasswordCheck() {
     setEncryptedKey,
     encryptedKey,
     biometricAvailable,
-  } = useStore()
+  } = useStore();
 
-  const canUseBiometric = biometricAvailable && isTrustedDevice()
+  const canUseBiometric = biometricAvailable && isTrustedDevice();
 
-  const [password, setPassword] = useState('')
-  const [confirmPassword, setConfirmPassword] = useState('')
-  const [enableBiometric, setEnableBiometric] = useState(biometricAvailable)
-  const [error, setError] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
-  const [biometricLoading, setBiometricLoading] = useState(false)
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [enableBiometric, setEnableBiometric] = useState(biometricAvailable);
+  const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [biometricLoading, setBiometricLoading] = useState(false);
 
-  const isFirstSet = !encryptedKey
+  const isFirstSet = !encryptedKey;
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setError('')
-    setIsLoading(true)
+    e.preventDefault();
+    setError("");
+    setIsLoading(true);
 
     try {
       if (isFirstSet) {
         if (password !== confirmPassword) {
-          setError('Passwords do not match')
-          setIsLoading(false)
-          return
+          setError("Passwords do not match");
+          setIsLoading(false);
+          return;
         }
         if (password.length < 4) {
-          setError('Password must be at least 4 characters')
-          setIsLoading(false)
-          return
+          setError("Password must be at least 4 characters");
+          setIsLoading(false);
+          return;
         }
-        await setEncryptedKey(password, enableBiometric && biometricAvailable)
+        await setEncryptedKey(password, enableBiometric && biometricAvailable);
       } else {
-        const success = await unlock(password)
+        const success = await unlock(password);
         if (!success) {
-          setError('Invalid password')
+          setError("Invalid password");
         }
       }
     } catch {
-      setError('An error occurred')
+      setError("An error occurred");
     }
-    setIsLoading(false)
-  }
+    setIsLoading(false);
+  };
 
   const handleBiometricUnlock = async () => {
-    setBiometricLoading(true)
-    setError('')
-    
+    setBiometricLoading(true);
+    setError("");
+
     try {
-      const success = await unlockWithBiometric()
+      const success = await unlockWithBiometric();
       if (!success) {
-        setError('Biometric authentication failed. Please use your master password.')
+        setError(
+          "Biometric authentication failed. Please use your master password.",
+        );
       }
     } catch {
-      setError('Biometric authentication failed. Please use your master password.')
+      setError(
+        "Biometric authentication failed. Please use your master password.",
+      );
     }
-    setBiometricLoading(false)
-  }
+    setBiometricLoading(false);
+  };
 
   return (
     <Box component="form" onSubmit={handleSubmit} sx={{ width: 300 }}>
-      <Typography variant="h6" gutterBottom>
-        {isFirstSet ? 'Create Master Password' : 'Enter Master Password'}
+      <Typography variant="body1" gutterBottom>
+        {isFirstSet ? "Create Master Password" : "Enter Master Password"}
       </Typography>
-      
+
       <TextField
+        sx={{ mt: 0 }}
         fullWidth
         label="Password"
         type="password"
+        size="small"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
-        margin="normal"
+        margin="dense"
         required
         disabled={isLoading}
       />
@@ -108,7 +114,7 @@ export function MasterPasswordCheck() {
             required
             disabled={isLoading}
           />
-          
+
           {biometricAvailable && (
             <FormControlLabel
               control={
@@ -119,9 +125,11 @@ export function MasterPasswordCheck() {
                 />
               }
               label={
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                   <FingerprintIcon fontSize="small" />
-                  <Typography variant="body2">Enable biometric unlock</Typography>
+                  <Typography variant="body2">
+                    Enable biometric unlock
+                  </Typography>
                 </Box>
               }
               sx={{ mt: 1 }}
@@ -130,7 +138,11 @@ export function MasterPasswordCheck() {
         </>
       )}
 
-      {error && <Alert severity="error" sx={{ mt: 2 }}>{error}</Alert>}
+      {error && (
+        <Alert severity="error" sx={{ mt: 2 }}>
+          {error}
+        </Alert>
+      )}
 
       <Button
         type="submit"
@@ -140,7 +152,13 @@ export function MasterPasswordCheck() {
         disabled={isLoading || biometricLoading}
         sx={{ mt: 2 }}
       >
-        {isLoading ? <CircularProgress size={24} /> : (isFirstSet ? 'Create' : 'Unlock')}
+        {isLoading ? (
+          <CircularProgress size={24} />
+        ) : isFirstSet ? (
+          "Create"
+        ) : (
+          "Unlock"
+        )}
       </Button>
 
       {!isFirstSet && canUseBiometric && (
@@ -150,14 +168,20 @@ export function MasterPasswordCheck() {
             variant="outlined"
             color="primary"
             fullWidth
-            startIcon={biometricLoading ? <CircularProgress size={20} /> : <FingerprintIcon />}
+            startIcon={
+              biometricLoading ? (
+                <CircularProgress size={20} />
+              ) : (
+                <FingerprintIcon />
+              )
+            }
             onClick={handleBiometricUnlock}
             disabled={isLoading || biometricLoading}
           >
-            {biometricLoading ? 'Authenticating...' : 'Use Biometrics'}
+            {biometricLoading ? "Authenticating..." : "Use Biometrics"}
           </Button>
         </>
       )}
     </Box>
-  )
+  );
 }

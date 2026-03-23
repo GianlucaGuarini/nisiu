@@ -1,14 +1,14 @@
-import { Button } from '@mui/material'
-import { signInWithPopup, GoogleAuthProvider } from 'firebase/auth'
-import { getAuth } from 'firebase/auth'
-import { firebaseApp } from '../database'
+import { Button } from "@mui/material";
+import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import { getAuth } from "firebase/auth";
+import { firebaseApp } from "../database";
 
 export function Login() {
   const handleLogin = async () => {
-    const auth = getAuth(firebaseApp)
-    const provider = new GoogleAuthProvider()
-    await signInWithPopup(auth, provider)
-  }
+    const auth = getAuth(firebaseApp);
+    const provider = new GoogleAuthProvider();
+    await signInWithPopup(auth, provider);
+  };
 
   return (
     <Button
@@ -19,5 +19,5 @@ export function Login() {
     >
       Login with Google
     </Button>
-  )
+  );
 }

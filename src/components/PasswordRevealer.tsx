@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState } from "react";
 import {
   Dialog,
   DialogTitle,
@@ -8,54 +8,71 @@ import {
   Box,
   Typography,
   IconButton,
-} from '@mui/material'
-import VisibilityIcon from '@mui/icons-material/Visibility'
-import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
-import ContentCopyIcon from '@mui/icons-material/ContentCopy'
-import { type PasswordData } from '../database'
+} from "@mui/material";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+import { type PasswordData } from "../database";
 
 interface PasswordRevealerProps {
-  open: boolean
-  password: PasswordData | null
-  onClose: () => void
+  open: boolean;
+  password: PasswordData | null;
+  onClose: () => void;
 }
 
-export function PasswordRevealer({ open, password, onClose }: PasswordRevealerProps) {
-  const [showPassword, setShowPassword] = useState(false)
+export function PasswordRevealer({
+  open,
+  password,
+  onClose,
+}: PasswordRevealerProps) {
+  const [showPassword, setShowPassword] = useState(false);
 
-  if (!password) return null
+  if (!password) return null;
 
   const handleCopy = (value: string) => {
-    navigator.clipboard.writeText(value)
-  }
+    navigator.clipboard.writeText(value);
+  };
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
       <DialogTitle>{password.name}</DialogTitle>
       <DialogContent>
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 1 }}>
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 1 }}>
           {password.username && (
             <Box>
-              <Typography variant="caption" color="text.secondary">Username</Typography>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <Typography variant="caption" color="text.secondary">
+                Username
+              </Typography>
+              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                 <Typography>{password.username}</Typography>
-                <IconButton size="small" onClick={() => handleCopy(password.username)}>
+                <IconButton
+                  size="small"
+                  onClick={() => handleCopy(password.username)}
+                >
                   <ContentCopyIcon fontSize="small" />
                 </IconButton>
               </Box>
             </Box>
           )}
-          
+
           <Box>
-            <Typography variant="caption" color="text.secondary">Password</Typography>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              <Typography sx={{ fontFamily: 'monospace' }}>
-                {showPassword ? password.value : '••••••••••••'}
+            <Typography variant="caption" color="text.secondary">
+              Password
+            </Typography>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+              <Typography sx={{ fontFamily: "monospace", flex: "0 1 100%" }}>
+                {showPassword ? password.value : "••••••••••••"}
               </Typography>
-              <IconButton size="small" onClick={() => setShowPassword(!showPassword)}>
+              <IconButton
+                size="small"
+                onClick={() => setShowPassword(!showPassword)}
+              >
                 {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
               </IconButton>
-              <IconButton size="small" onClick={() => handleCopy(password.value)}>
+              <IconButton
+                size="small"
+                onClick={() => handleCopy(password.value)}
+              >
                 <ContentCopyIcon fontSize="small" />
               </IconButton>
             </Box>
@@ -63,7 +80,9 @@ export function PasswordRevealer({ open, password, onClose }: PasswordRevealerPr
 
           {password.comment && (
             <Box>
-              <Typography variant="caption" color="text.secondary">Comment</Typography>
+              <Typography variant="caption" color="text.secondary">
+                Comment
+              </Typography>
               <Typography>{password.comment}</Typography>
             </Box>
           )}
@@ -73,5 +92,5 @@ export function PasswordRevealer({ open, password, onClose }: PasswordRevealerPr
         <Button onClick={onClose}>Close</Button>
       </DialogActions>
     </Dialog>
-  )
+  );
 }

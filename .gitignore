@@ -42,5 +42,8 @@ jspm_packages
 # env file
 .env
 
+# ts build info 
+*.tsbuildinfo
+
 # generated files
 # /dist

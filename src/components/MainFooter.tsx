@@ -1,51 +1,70 @@
-import { useState } from 'react'
-import { Box, Typography, Link, Button, Dialog, DialogTitle, DialogContent, DialogActions, CircularProgress } from '@mui/material'
-import SettingsIcon from '@mui/icons-material/Settings'
-import FingerprintIcon from '@mui/icons-material/Fingerprint'
-import { useStore } from '../store/StoreContext'
+import { useState } from "react";
+import {
+  Box,
+  Typography,
+  Link,
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  CircularProgress,
+} from "@mui/material";
+import SettingsIcon from "@mui/icons-material/Settings";
+import FingerprintIcon from "@mui/icons-material/Fingerprint";
+import { useStore } from "../store/StoreContext";
 
 export function MainFooter() {
-  const { biometricAvailable, isTrustedDevice, disableBiometric, enableBiometric } = useStore()
-  const [settingsOpen, setSettingsOpen] = useState(false)
-  const [enabling, setEnabling] = useState(false)
+  const {
+    biometricAvailable,
+    isTrustedDevice,
+    disableBiometric,
+    enableBiometric,
+  } = useStore();
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [enabling, setEnabling] = useState(false);
 
-  const year = new Date().getFullYear()
+  const year = new Date().getFullYear();
 
   const handleDisableBiometric = () => {
-    if (window.confirm('Are you sure you want to disable biometric authentication?')) {
-      disableBiometric()
-      setSettingsOpen(false)
+    if (
+      window.confirm(
+        "Are you sure you want to disable biometric authentication?",
+      )
+    ) {
+      disableBiometric();
+      setSettingsOpen(false);
     }
-  }
+  };
 
   const handleEnableBiometric = async () => {
-    setEnabling(true)
-    const success = await enableBiometric()
-    setEnabling(false)
+    setEnabling(true);
+    const success = await enableBiometric();
+    setEnabling(false);
     if (success) {
-      setSettingsOpen(false)
+      setSettingsOpen(false);
     } else {
-      alert('Failed to enable biometric authentication')
+      alert("Failed to enable biometric authentication");
     }
-  }
+  };
 
   return (
     <>
       <Box
         component="footer"
         sx={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'baseline',
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "baseline",
           p: 2,
-          mt: 'auto',
+          mt: "auto",
         }}
       >
         <Typography variant="body2" color="text.secondary">
           Gianluca Guarini &copy; {year}
         </Typography>
-        
-        <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+
+        <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
           {biometricAvailable && (
             <Button
               size="small"
@@ -73,21 +92,27 @@ export function MainFooter() {
             Biometric Authentication
           </Typography>
           <Typography variant="body2" color="text.secondary" paragraph>
-            {isTrustedDevice 
-              ? 'You can use Touch ID / Fingerprint to unlock your passwords on this device.'
-              : 'Enable biometric authentication to unlock your passwords with your fingerprint.'}
+            {isTrustedDevice
+              ? "You can use Touch ID / Fingerprint to unlock your passwords on this device."
+              : "Enable biometric authentication to unlock your passwords with your fingerprint."}
           </Typography>
-          
+
           {!isTrustedDevice && (
             <Button
               variant="contained"
               color="primary"
-              startIcon={enabling ? <CircularProgress size={20} color="inherit" /> : <FingerprintIcon />}
+              startIcon={
+                enabling ? (
+                  <CircularProgress size={20} color="inherit" />
+                ) : (
+                  <FingerprintIcon />
+                )
+              }
               onClick={handleEnableBiometric}
               disabled={enabling}
               sx={{ mb: 2 }}
             >
-              {enabling ? 'Enabling...' : 'Enable Biometric Authentication'}
+              {enabling ? "Enabling..." : "Enable Biometric Authentication"}
             </Button>
           )}
 
@@ -106,5 +131,5 @@ export function MainFooter() {
         </DialogActions>
       </Dialog>
     </>
-  )
+  );
 }
