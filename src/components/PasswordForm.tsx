@@ -7,7 +7,12 @@ import {
   Button,
   TextField,
   Box,
+  IconButton,
+  InputAdornment,
 } from '@mui/material'
+import VisibilityIcon from '@mui/icons-material/Visibility'
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
+import AutorenewIcon from '@mui/icons-material/Autorenew'
 import { type PasswordData } from '../database'
 import { generatePassword } from '../password-generator'
 
@@ -23,9 +28,11 @@ export function PasswordForm({ open, password, onClose, onSave }: PasswordFormPr
   const [username, setUsername] = useState('')
   const [value, setValue] = useState('')
   const [comment, setComment] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
 
   const isEditing = !!password
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (password) {
       setName(password.name)
@@ -38,10 +45,12 @@ export function PasswordForm({ open, password, onClose, onSave }: PasswordFormPr
       setValue('')
       setComment('')
     }
+    setShowPassword(false)
   }, [password])
 
   const handleGenerate = () => {
     setValue(generatePassword(16))
+    setShowPassword(true)
   }
 
   const handleSubmit = () => {
@@ -73,17 +82,28 @@ export function PasswordForm({ open, password, onClose, onSave }: PasswordFormPr
           />
           <TextField
             label="Password"
-            type="password"
+            type={showPassword ? 'text' : 'password'}
             value={value}
             onChange={(e) => setValue(e.target.value)}
             fullWidth
             required
-            InputProps={{
-              endAdornment: (
-                <Button onClick={handleGenerate} size="small">
-                  Generate
-                </Button>
-              ),
+            slotProps={{
+              input: {
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton onClick={handleGenerate} edge="end" title="Generate password">
+                      <AutorenewIcon />
+                    </IconButton>
+                    <IconButton
+                      onClick={() => setShowPassword(!showPassword)}
+                      edge="end"
+                      title={showPassword ? 'Hide password' : 'Show password'}
+                    >
+                      {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              },
             }}
           />
           <TextField

@@ -1,10 +1,17 @@
-import { Box, Typography } from '@mui/material'
+import { useEffect } from 'react'
+import { Box, Typography, Button } from '@mui/material'
 import { MasterPasswordCheck } from './MasterPasswordCheck'
 import { Login } from './Login'
 import { useStore } from '../store/StoreContext'
 
 export function Lock() {
-  const { user, encryptedKey } = useStore()
+  const { user, logout, unlockWithBiometric, isTrustedDevice, biometricAvailable, encryptedKey } = useStore()
+
+  useEffect(() => {
+    if (user && encryptedKey && isTrustedDevice && biometricAvailable) {
+      unlockWithBiometric()
+    }
+  }, [user, encryptedKey, isTrustedDevice, biometricAvailable, unlockWithBiometric])
 
   return (
     <Box
@@ -32,7 +39,12 @@ export function Lock() {
           <Login />
         </>
       ) : (
-        <MasterPasswordCheck isFirstSet={!encryptedKey} />
+        <>
+          <MasterPasswordCheck />
+          <Button variant="text" onClick={logout} sx={{ mt: 2 }}>
+            Logout
+          </Button>
+        </>
       )}
     </Box>
   )

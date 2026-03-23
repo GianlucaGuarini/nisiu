@@ -1,0 +1,37 @@
+/* buttons */
+
+.mdl-button.mdl-button--success {
+  background: var(--success-color);
+  color: white;
+}
+
+.mdl-button.mdl-button--error {
+  background: var(--error-color);
+  color: white;
+}
+
+.mdl-button.mdl-button--warning {
+  background: var(--warning-color);
+  color: white;
+}
+
+.mdl-button.mdl-button--dark {
+  background: var(--text-color);
+  color: white;
+}
+
+.mdl-button.mdl-button--light {
+  background: var(--light-color);
+}
+
+.mdl-button.mdl-button--fab.mdl-button--small-icon {
+  height: var(--double-size);
+  width: var(--double-size);
+  min-width: var(--double-size);
+}
+
+/* inputs */
+
+.mdl-textfield.mdl-textfield--password {
+  width: 100%;
+}
