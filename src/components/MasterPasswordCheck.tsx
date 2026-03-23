@@ -1,15 +1,13 @@
 import { useState } from "react";
-import {
-  TextField,
-  Button,
-  Box,
-  Typography,
-  Alert,
-  FormControlLabel,
-  Checkbox,
-  Divider,
-  CircularProgress,
-} from "@mui/material";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
+import Alert from "@mui/material/Alert";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Checkbox from "@mui/material/Checkbox";
+import Divider from "@mui/material/Divider";
+import CircularProgress from "@mui/material/CircularProgress";
 import FingerprintIcon from "@mui/icons-material/Fingerprint";
 import { useStore } from "../store/StoreContext";
 import { isTrustedDevice } from "../webauthn";
@@ -85,19 +83,15 @@ export function MasterPasswordCheck() {
 
   return (
     <Box component="form" onSubmit={handleSubmit} sx={{ width: 300 }}>
-      <Typography variant="body1" gutterBottom>
-        {isFirstSet ? "Create Master Password" : "Enter Master Password"}
-      </Typography>
-
       <TextField
         sx={{ mt: 0 }}
         fullWidth
-        label="Password"
+        label={isFirstSet ? "Master Password" : "Master Password"}
         type="password"
         size="small"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
-        margin="dense"
+        margin="normal"
         required
         disabled={isLoading}
       />

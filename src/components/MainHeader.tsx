@@ -1,38 +1,60 @@
-import { Box, Avatar, Typography, Button } from "@mui/material";
+import Box from "@mui/material/Box";
+import Avatar from "@mui/material/Avatar";
+import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
+import Tooltip from "@mui/material/Tooltip";
+import LogoutIcon from "@mui/icons-material/Logout";
 import { useStore } from "../store/StoreContext";
-import { Login } from "./Login";
 
 export function MainHeader() {
   const { user, logout } = useStore();
 
   return (
     <Box
+      component="header"
       sx={{
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
-        p: 2,
-        borderBottom: "1px solid rgba(0,0,0,0.1)",
+        px: 3,
+        py: 2,
+        borderBottom: "1px solid",
+        borderColor: "divider",
+        bgcolor: "background.paper",
       }}
     >
       {user && (
-        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
           <Avatar
             src={user.photoURL || undefined}
             alt={user.displayName || ""}
+            sx={{ width: 36, height: 36 }}
           />
-          <Typography>{user.displayName}</Typography>
+          <Box>
+            <Typography variant="body2" fontWeight={500}>
+              {user.displayName}
+            </Typography>
+            <Typography variant="caption" color="text.secondary">
+              {user.email}
+            </Typography>
+          </Box>
         </Box>
       )}
 
       <Box>
         {user ? (
-          <Button variant="text" onClick={logout}>
-            Logout
-          </Button>
-        ) : (
-          <Login />
-        )}
+          <Tooltip title="Lock">
+            <Button
+              variant="text"
+              size="small"
+              onClick={logout}
+              startIcon={<LogoutIcon />}
+              sx={{ color: "text.secondary" }}
+            >
+              Logout
+            </Button>
+          </Tooltip>
+        ) : null}
       </Box>
     </Box>
   );

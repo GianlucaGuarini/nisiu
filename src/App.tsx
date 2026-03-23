@@ -18,9 +18,21 @@ function AppContent() {
   }
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        minHeight: "100vh",
+        bgcolor: "background.default",
+      }}
+    >
       <MainHeader />
-      <PasswordsManager />
+      <Box
+        component="main"
+        sx={{ flex: 1, display: "flex", flexDirection: "column" }}
+      >
+        <PasswordsManager />
+      </Box>
       <MainFooter />
     </Box>
   );

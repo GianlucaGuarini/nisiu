@@ -199,13 +199,15 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     );
     const passwords = Object.values(
       encryptedPasswords as Record<string, EncryptedPassword>,
-    ).map((p) => ({
-      id: p.id,
-      name: decrypt(p.name, state.key as string),
-      username: decrypt(p.username, state.key as string),
-      value: decrypt(p.value, state.key as string),
-      comment: decrypt(p.comment, state.key as string),
-    }));
+    )
+      .map((p) => ({
+        id: p.id,
+        name: decrypt(p.name, state.key as string),
+        username: decrypt(p.username, state.key as string),
+        value: decrypt(p.value, state.key as string),
+        comment: decrypt(p.comment, state.key as string),
+      }))
+      .sort((a, b) => a.name.localeCompare(b.name));
     setState((prev) => ({ ...prev, passwords }));
   }, [state.user, state.key]);
 

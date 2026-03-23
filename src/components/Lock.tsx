@@ -1,4 +1,6 @@
-import { Box, Typography } from "@mui/material";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import Paper from "@mui/material/Paper";
 import { MasterPasswordCheck } from "./MasterPasswordCheck";
 import { Login } from "./Login";
 import { useStore } from "../store/StoreContext";
@@ -9,37 +11,48 @@ export function Lock() {
   return (
     <Box
       sx={{
-        position: "fixed",
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
+        minHeight: "100vh",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        gap: 4,
+        bgcolor: "background.default",
+        p: 3,
       }}
     >
       <Box
         component="img"
         src="/images/nisiu.png"
-        sx={{ width: 240, maxWidth: "60%" }}
+        sx={{ width: 200, maxWidth: "50%", mb: 4 }}
       />
 
-      {!user ? (
-        <>
-          <Typography variant="h5">Welcome to nisiu</Typography>
-          <Typography color="text.secondary">
-            Please log in with your Google account
-          </Typography>
-          <Login />
-        </>
-      ) : (
-        <>
-          <MasterPasswordCheck />
-        </>
-      )}
+      <Paper
+        elevation={0}
+        sx={{
+          p: 4,
+          borderRadius: 3,
+          width: "100%",
+          maxWidth: 380,
+          border: "1px solid",
+          borderColor: "divider",
+        }}
+      >
+        {!user ? (
+          <>
+            <Typography variant="h6" gutterBottom fontWeight={600}>
+              Welcome to nisiu
+            </Typography>
+            <Typography color="text.secondary" variant="body2" sx={{ mb: 3 }}>
+              Your secure password manager
+            </Typography>
+            <Login />
+          </>
+        ) : (
+          <>
+            <MasterPasswordCheck />
+          </>
+        )}
+      </Paper>
     </Box>
   );
 }
