@@ -22,7 +22,7 @@ export function Lock() {
     >
       <Box
         component="img"
-        src="/images/nisiu.png"
+        src="./images/nisiu.png"
         sx={{ width: 200, maxWidth: "50%", mb: 4 }}
       />
 

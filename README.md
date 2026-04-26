@@ -1,4 +1,4 @@
-<img width="100%" src="public/images/nisiu.png" alt="nisiu logo" />
+<img width="100%" src="images/nisiu.png" alt="nisiu logo" />
 
 nisiu is a free, secure password manager that stores your data in your own Firebase instance.
 
