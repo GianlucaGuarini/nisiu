@@ -36,7 +36,7 @@ npm run build
 
 ### 3. Deploy
 
-Deploy to any static hosting service (Firebase Hosting, Vercel, Netlify, etc.) or open `dist/index.html` locally.
+Deploy to any static hosting service (Firebase Hosting, Vercel, Netlify, etc.) or open `docs/index.html` locally.
 
 ## Database Rules
 
@@ -65,3 +65,4 @@ For private use, add these rules in Firebase Console > Realtime Database:
 ## License
 
 MIT
+
