@@ -1,118 +1,67 @@
-<img width='100%' src='https://rawgit.com/GianlucaGuarini/nisiu/master/logo.jpg' alt='nisiu logo'/>
+<img width="100%" src="public/images/nisiu.png" alt="nisiu logo" />
 
-[![Build Status][travis-image]][travis-url]
+nisiu is a free, secure password manager that stores your data in your own Firebase instance.
 
-[![NPM version][npm-version-image]][npm-url]
-[![NPM downloads][npm-downloads-image]][npm-url]
-[![MIT License][license-image]][license-url]
+## Features
 
-nisiu is a completely free password manager configurable with your own firebase account.
+- **Private** - Your passwords are encrypted locally using AES-256 before being stored
+- **Secure** - Uses Google OAuth for authentication
+- **Biometric** - Supports Touch ID / Fingerprint for quick unlocking
+- **Password Generator** - Built-in secure password generator
+- **Search** - Quickly find your saved passwords
 
-# General info
+## Setup
 
-Nisiu was designed only for a personal use but it can be customized in order to be used by your friends and your family with a few steps.
+### 1. Firebase Configuration
 
-## Goals
+Create a Firebase project at [firebase.google.com](https://console.firebase.google.com/) and enable Google Authentication in the Firebase Console under Authentication > Sign-in method.
 
-- ✅ Built to **let you own and manage your passwords**
-- ✅ Designed **only for modern browsers**
-- ✅ It's available online with **no additional installation**
-- ✅ It stores your data on firebase and **you can set up easily your own private DB instance** via [env credentials](.env)
-- ✅ **It's secure**, it uses the [AES algorithm](https://en.wikipedia.org/wiki/Advanced_Encryption_Standard) for all the stored data by default
-- ✅ **Google as authentication** system
-- ✅ Completely **open source** [under MIT license](LICENSE)
+Replace the Firebase credentials in your `.env` file:
 
-## Caveats
+```
+VITE_FIREBASE_API_KEY=your_api_key
+VITE_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
+VITE_FIREBASE_PROJECT_ID=your_project_id
+VITE_FIREBASE_STORAGE_BUCKET=your_project.appspot.com
+VITE_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
+VITE_FIREBASE_APP_ID=your_app_id
+```
 
-- ❌ Doesn't work on old browser that do not support ES2017 javascript features
-- ❌ It's a clientside application so it needs javascript to be enabled
-- ❌ It doesn't work offline yet
+### 2. Install & Build
 
-# Configuration
+```bash
+npm install
+npm run build
+```
 
-## Google Account Creation
+### 3. Deploy
 
-Make sure to have a [google account](https://myaccount.google.com/intro). If you don't have any just create one
+Deploy to any static hosting service (Firebase Hosting, Vercel, Netlify, etc.) or open `dist/index.html` locally.
 
-## Firebase API Creation
+## Database Rules
 
-You will need to set your own firebase credentials in the [.env file](.env). To do so you need to create an new project using the [firebase console](https://console.firebase.google.com/)
-
-1. Click on the add project button
-2. Click on the "Add Firebase to your web app" button
-3. Replace the app credentials in the [.env file](.env)
-
-## Build step
-
-Once you have done all the steps above you are ready to start using nisiu. The last step is needed to build again the app using your new credentials.
-
-1. Install the npm dependencies `npm i`
-2. Run `make build`
-3. Open `index.html` with any modern browser and voilà!
-
-# Setup your DB Rules
-
-With firebase you can easily control you application DB whitelisting the users that can read and write from it.
-
-### Easy rules
-
-A simple way to configure your DB is to add the following rules via firebase console
+For private use, add these rules in Firebase Console > Realtime Database:
 
 ```json
 {
   "rules": {
-    "$user": {
-      ".read": "auth.uid === $user",
-      ".write": "auth.uid === $user"
+    "$uid": {
+      ".read": "$uid === auth.uid",
+      ".write": "$uid === auth.uid"
     }
   }
 }
 ```
 
-[More info about firebase database rules](https://firebase.google.com/docs/reference/security/database)
+## Technology Stack
 
-### Strict rules
+- React 19
+- TypeScript
+- MUI (Material UI)
+- Firebase (Auth + Realtime Database)
+- CryptoJS (AES encryption)
+- WebAuthn (Biometric authentication)
 
-You can enhance the security of your nisiu database using complexer rules like:
+## License
 
-```json
-{
-  "rules": {
-    "$user": {
-      ".read": "auth.uid === $user && root.child('whitelist').hasChild(auth.uid)",
-      ".write": "auth.uid === $user && root.child('whitelist').hasChild(auth.uid)",
-      "passwords": {
-        "$id": {
-          ".validate": "newData.child('value').isString() && newData.child('value').val().length > 0"
-        }
-      },
-      "key": {
-        ".validate": "newData.isString() && newData.val().length >= 64"
-      }
-    },
-    "whitelist": {
-      ".read": false,
-      ".write": false
-    }
-  }
-}
-```
-
-With the rules above only users belonging to the "whitelist" will be able to use your application
-
-# TODO
-
-- [x] Whitelist users
-- [ ] Add a rock solid unit test
-- [ ] Improve async UI events with inline loaders and animations
-- [ ] Add import vs export feature via drag and drop
-- [x] PWA enhancements
-- [x] Add favicon
-
-[travis-image]: https://img.shields.io/travis/GianlucaGuarini/nisiu.svg?style=flat-square
-[travis-url]: https://travis-ci.org/GianlucaGuarini/nisiu
-[license-image]: http://img.shields.io/badge/license-MIT-000000.svg?style=flat-square
-[license-url]: LICENSE
-[npm-version-image]: http://img.shields.io/npm/v/nisiu.svg?style=flat-square
-[npm-downloads-image]: http://img.shields.io/npm/dm/nisiu.svg?style=flat-square
-[npm-url]: https://npmjs.org/package/nisiu
+MIT

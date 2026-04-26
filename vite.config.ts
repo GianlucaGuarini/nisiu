@@ -5,5 +5,9 @@ export default defineConfig({
   plugins: [react()],
   define: {
     'process.env': {}
+  },
+  build: {
+    outDir: 'docs',
+    emptyOutDir: true
   }
 })
