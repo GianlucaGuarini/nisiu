@@ -15,11 +15,7 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true,
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["src/*"]
-    }
+    "noUncheckedSideEffectImports": true
   },
   "include": ["src"],
   "references": [{ "path": "./tsconfig.node.json" }]

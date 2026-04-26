@@ -85,7 +85,7 @@ export function PasswordsCollection({
               mb: password.username ? 1.5 : 0,
             }}
           >
-            <Typography fontWeight={600} variant="body1">
+            <Typography sx={{ fontWeight: 600 }} variant="body1">
               {password.name}
             </Typography>
             <Box sx={{ display: "flex", gap: 0.5 }}>

@@ -31,7 +31,7 @@ export function MainHeader() {
             sx={{ width: 36, height: 36 }}
           />
           <Box>
-            <Typography variant="body2" fontWeight={500}>
+            <Typography variant="body2" sx={{ fontWeight: 500 }}>
               {user.displayName}
             </Typography>
             <Typography variant="caption" color="text.secondary">

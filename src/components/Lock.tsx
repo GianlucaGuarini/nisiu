@@ -39,7 +39,7 @@ export function Lock() {
       >
         {!user ? (
           <>
-            <Typography variant="h6" gutterBottom fontWeight={600}>
+            <Typography variant="h6" sx={{ fontWeight: 600, mb: 1 }}>
               Welcome to nisiu
             </Typography>
             <Typography color="text.secondary" variant="body2" sx={{ mb: 3 }}>

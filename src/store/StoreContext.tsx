@@ -124,6 +124,23 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     }));
   }, []);
 
+  const fetchPasswords = useCallback(async () => {
+    if (!state.user || !state.key) return;
+    const encryptedPasswords = await database.account.getPasswords(state.user.uid);
+    const passwords = Object.values(
+      encryptedPasswords as Record<string, EncryptedPassword>,
+    )
+      .map((p) => ({
+        id: p.id,
+        name: decrypt(p.name, state.key as string),
+        username: decrypt(p.username, state.key as string),
+        value: decrypt(p.value, state.key as string),
+        comment: decrypt(p.comment, state.key as string),
+      }))
+      .sort((a, b) => a.name.localeCompare(b.name));
+    setState((prev) => ({ ...prev, passwords }));
+  }, [state.user, state.key]);
+
   const unlock = useCallback(
     async (password: string): Promise<boolean> => {
       if (!state.user || !state.encryptedKey) return false;
@@ -155,6 +172,28 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     }
     return false;
   }, [state.user, state.encryptedKey]);
+
+  useEffect(() => {
+    if (!state.isLocked && state.key) {
+      const loadPasswords = async () => {
+        if (!state.user || !state.key) return;
+        const encryptedPasswords = await database.account.getPasswords(state.user.uid);
+        const passwords = Object.values(
+          encryptedPasswords as Record<string, EncryptedPassword>,
+        )
+          .map((p) => ({
+            id: p.id,
+            name: decrypt(p.name, state.key as string),
+            username: decrypt(p.username, state.key as string),
+            value: decrypt(p.value, state.key as string),
+            comment: decrypt(p.comment, state.key as string),
+          }))
+          .sort((a, b) => a.name.localeCompare(b.name));
+        setState((prev) => ({ ...prev, passwords }));
+      };
+      loadPasswords();
+    }
+  }, [state.isLocked, state.user, state.key]);
 
   const setEncryptedKey = useCallback(
     async (password: string, enableBiometricFlag = false) => {
@@ -191,25 +230,6 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     }
     return success;
   }, [state.user, state.key, state.masterPassword]);
-
-  const fetchPasswords = useCallback(async () => {
-    if (!state.user || !state.key) return;
-    const encryptedPasswords = await database.account.getPasswords(
-      state.user.uid,
-    );
-    const passwords = Object.values(
-      encryptedPasswords as Record<string, EncryptedPassword>,
-    )
-      .map((p) => ({
-        id: p.id,
-        name: decrypt(p.name, state.key as string),
-        username: decrypt(p.username, state.key as string),
-        value: decrypt(p.value, state.key as string),
-        comment: decrypt(p.comment, state.key as string),
-      }))
-      .sort((a, b) => a.name.localeCompare(b.name));
-    setState((prev) => ({ ...prev, passwords }));
-  }, [state.user, state.key]);
 
   const addPassword = useCallback(
     async (password: Omit<PasswordData, "id">) => {
@@ -252,12 +272,6 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     setState((prev) => ({ ...prev, isTrustedDevice: false }));
   }, []);
 
-  useEffect(() => {
-    if (!state.isLocked) {
-      fetchPasswords();
-    }
-  }, [state.isLocked, fetchPasswords]);
-
   return (
     <StoreContext.Provider
       value={{
@@ -280,6 +294,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   );
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function useStore() {
   const context = useContext(StoreContext);
   if (!context) {

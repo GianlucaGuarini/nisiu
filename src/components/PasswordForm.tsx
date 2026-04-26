@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
@@ -27,29 +27,13 @@ export function PasswordForm({
   onClose,
   onSave,
 }: PasswordFormProps) {
-  const [name, setName] = useState("");
-  const [username, setUsername] = useState("");
-  const [value, setValue] = useState("");
-  const [comment, setComment] = useState("");
+  const [name, setName] = useState(password?.name ?? "");
+  const [username, setUsername] = useState(password?.username ?? "");
+  const [value, setValue] = useState(password?.value ?? "");
+  const [comment, setComment] = useState(password?.comment ?? "");
   const [showPassword, setShowPassword] = useState(false);
 
   const isEditing = !!password;
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => {
-    if (password) {
-      setName(password.name);
-      setUsername(password.username);
-      setValue(password.value);
-      setComment(password.comment);
-    } else {
-      setName("");
-      setUsername("");
-      setValue("");
-      setComment("");
-    }
-    setShowPassword(false);
-  }, [password]);
 
   const handleGenerate = () => {
     setValue(generatePassword(16));
@@ -65,8 +49,17 @@ export function PasswordForm({
     onClose();
   };
 
+  const handleClose = () => {
+    setName("");
+    setUsername("");
+    setValue("");
+    setComment("");
+    setShowPassword(false);
+    onClose();
+  };
+
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
+    <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
       <DialogTitle>{isEditing ? "Edit Password" : "Add Password"}</DialogTitle>
       <DialogContent>
         <Box sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 1 }}>
@@ -128,7 +121,7 @@ export function PasswordForm({
         </Box>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose}>Cancel</Button>
+        <Button onClick={handleClose}>Cancel</Button>
         <Button
           onClick={handleSubmit}
           variant="contained"

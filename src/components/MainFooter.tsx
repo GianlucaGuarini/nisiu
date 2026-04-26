@@ -20,19 +20,19 @@ export function MainFooter() {
     enableBiometric,
   } = useStore();
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [confirmOpen, setConfirmOpen] = useState(false);
   const [enabling, setEnabling] = useState(false);
 
   const year = new Date().getFullYear();
 
   const handleDisableBiometric = () => {
-    if (
-      window.confirm(
-        "Are you sure you want to disable biometric authentication?",
-      )
-    ) {
-      disableBiometric();
-      setSettingsOpen(false);
-    }
+    setConfirmOpen(true);
+  };
+
+  const handleConfirmDisable = () => {
+    disableBiometric();
+    setConfirmOpen(false);
+    setSettingsOpen(false);
   };
 
   const handleEnableBiometric = async () => {
@@ -77,7 +77,7 @@ export function MainFooter() {
       <Dialog
         open={settingsOpen}
         onClose={() => setSettingsOpen(false)}
-        PaperProps={{ sx: { maxWidth: 400 } }}
+        slotProps={{ paper: { sx: { maxWidth: 400 } } }}
       >
         <DialogTitle sx={{ pb: 1 }}>Biometric Settings</DialogTitle>
         <DialogContent>
@@ -96,7 +96,7 @@ export function MainFooter() {
               <FingerprintIcon sx={{ color: "primary.main", fontSize: 28 }} />
             </Box>
             <Box>
-              <Typography variant="body1" fontWeight={500}>
+              <Typography variant="body1" sx={{ fontWeight: 500 }}>
                 {isTrustedDevice ? "Enabled" : "Not Enabled"}
               </Typography>
               <Typography variant="body2" color="text.secondary">
@@ -139,6 +139,25 @@ export function MainFooter() {
         </DialogContent>
         <DialogActions sx={{ px: 3, pb: 2 }}>
           <Button onClick={() => setSettingsOpen(false)}>Close</Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog
+        open={confirmOpen}
+        onClose={() => setConfirmOpen(false)}
+        slotProps={{ paper: { sx: { maxWidth: 340 } } }}
+      >
+        <DialogTitle sx={{ pb: 1 }}>Disable Biometric</DialogTitle>
+        <DialogContent>
+          <Typography variant="body2">
+            Are you sure you want to disable biometric authentication?
+          </Typography>
+        </DialogContent>
+        <DialogActions sx={{ px: 3, pb: 2 }}>
+          <Button onClick={() => setConfirmOpen(false)}>Cancel</Button>
+          <Button variant="contained" color="error" onClick={handleConfirmDisable}>
+            Disable
+          </Button>
         </DialogActions>
       </Dialog>
     </>

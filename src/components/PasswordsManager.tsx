@@ -2,6 +2,11 @@ import { useState, useEffect } from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import DialogActions from "@mui/material/DialogActions";
 import AddIcon from "@mui/icons-material/Add";
 import { PasswordsCollection } from "./PasswordsCollection";
 import { PasswordForm } from "./PasswordForm";
@@ -15,11 +20,10 @@ export function PasswordsManager() {
   const [searchTerm, setSearchTerm] = useState("");
   const [isScrolled, setIsScrolled] = useState(false);
   const [formOpen, setFormOpen] = useState(false);
-  const [editingPassword, setEditingPassword] = useState<PasswordData | null>(
-    null,
-  );
+  const [editingPassword, setEditingPassword] = useState<PasswordData | null>(null);
   const [revealingPassword, setRevealingPassword] =
     useState<PasswordData | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -45,9 +49,10 @@ export function PasswordsManager() {
     }
   };
 
-  const handleDelete = async (id: string) => {
-    if (window.confirm("Are you sure you want to delete this password?")) {
-      await deletePassword(id);
+  const handleDelete = async () => {
+    if (deletingId) {
+      await deletePassword(deletingId);
+      setDeletingId(null);
     }
   };
 
@@ -113,7 +118,7 @@ export function PasswordsManager() {
           onEdit={(password) => {
             setEditingPassword(password);
           }}
-          onDelete={handleDelete}
+          onDelete={setDeletingId}
         />
       </Box>
 
@@ -135,6 +140,28 @@ export function PasswordsManager() {
         password={revealingPassword}
         onClose={() => setRevealingPassword(null)}
       />
+
+      <Dialog
+        open={!!deletingId}
+        onClose={() => setDeletingId(null)}
+        slotProps={{ paper: { sx: { maxWidth: 340 } } }}
+      >
+        <DialogTitle sx={{ pb: 1 }}>Delete Password</DialogTitle>
+        <DialogContent>
+          <Typography variant="body2" sx={{ mb: 2 }}>
+            Are you sure you want to delete this password?
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            This action cannot be undone.
+          </Typography>
+        </DialogContent>
+        <DialogActions sx={{ px: 3, pb: 2 }}>
+          <Button onClick={() => setDeletingId(null)}>Cancel</Button>
+          <Button variant="contained" color="error" onClick={handleDelete}>
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }
